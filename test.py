@@ -20,10 +20,10 @@ my_mesh = Mesh(
     [
         Vec3(2, 1, 3.5),
         Vec3(-1, 0, 3.0),
-        Vec3(1, 7, 3.0),
-        Vec3(-2, -3, 2.0),
-        Vec3(-4, 6, 4.0),
-        Vec3(2, 1, 4.0)
+        Vec3(1, 7, 5.0),
+        Vec3(-2, -2, 4.0),
+        Vec3(-4, -6, 4.0),
+        Vec3(2, -1, 4.0)
     ],
     [
         (0,1,2),
@@ -34,13 +34,10 @@ my_mesh = Mesh(
 
 t1 = time.time()
 for poly in my_mesh.get_polygons(my_mesh.vertexes):
-    print(poly, "POLY")
+    print(poly)
     projections = poly.project(cam, screen)
     proj1,proj2,proj3= projections
-    img_draw.polygon((*proj1,*proj2,*proj3,), "white")
-    print(projections, "PROJ")
     min_y, max_y = poly.get_vertical_bounds(projections, cam)
-    print(min_y, max_y)
     for y in range(min_y, max_y):
         min_x, max_x = poly.get_render_row_range(y, projections)
         for x in range(min_x, max_x):

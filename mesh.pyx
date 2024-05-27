@@ -45,7 +45,6 @@ cdef class Mesh:
             list[Polygon] ret = []
         cdef Polygon POLY
         for pgon in pgons:
-            print(pgon.A[0].x,pgon.C[0].x)
             POLY = Polygon.from_cpp(pgon)
             ret.append(POLY)
             
