@@ -9,7 +9,7 @@ cdef extern from "src/Vec3.h":
         float x
         float y
         float z
-        tup2f project(camera* camera, screen* screen)
+        tup2f project(camera& camera, screen& screen)
 
 cdef class Vec3:
     cdef vec3 c_class

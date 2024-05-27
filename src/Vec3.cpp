@@ -2,19 +2,19 @@
 #include "Camera.h"
 #include "Tup.h"
 #include <algorithm>
+#include <iostream>
 
-tup<float, 2> vec3::project(camera* camera, screen* screen) {
-    float cam_w = (float)camera->view_width;
-    float cam_h = (float)camera->view_height;
-    float scr_w = (float)screen->width;
-    float scr_h = (float)screen->height;
-    float z_prime = (float)camera->view_distance;
+tup<float, 2> vec3::project(camera& camera, screen& screen) {
+    float cam_w = (float)camera.view_width;
+    float cam_h = (float)camera.view_height;
+    float scr_w = (float)screen.width;
+    float scr_h = (float)screen.height;
+    float z_prime = (float)camera.view_distance;
     float y_prime = this->y*z_prime / this->z;
     float x_prime = this->x*z_prime / this->z;
-
     float _x = x_prime * cam_w / scr_w;
     float _y = y_prime * cam_h / scr_h;
-    tup<float, 2> proj = make_tup<float, 2>({-x + (cam_w/2.0f), -y + (cam_h/2.0f)});
+    tup<float, 2> proj = make_tup<float, 2>({std::max(0.0f, _x + (cam_w/2.0f)), std::min(cam_h, -_y + (cam_h/2.0f))});
     return proj;
 }
 

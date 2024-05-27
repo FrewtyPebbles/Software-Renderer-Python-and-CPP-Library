@@ -1,7 +1,5 @@
 # distutils: language = c++
 from vec3 cimport Vec3, vec3
-cdef extern from "src/Camera.cpp":
-    pass
 
 cdef class Screen:
     def __init__(self, int width, int height) -> None:

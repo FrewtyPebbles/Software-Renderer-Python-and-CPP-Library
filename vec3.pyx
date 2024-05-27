@@ -1,6 +1,4 @@
 # distutils: language = c++
-cdef extern from "src/Vec3.cpp":
-    pass
 
 cdef class Vec3:
     def __init__(self, float x, float y, float z) -> None:
@@ -31,5 +29,5 @@ cdef class Vec3:
         self.c_class.z = value
 
     cpdef (float, float) project(self, Camera camera_obj, Screen screen_obj):
-        cdef tup2f res = self.c_class.project(&camera_obj.c_class, &screen_obj.c_class)
+        cdef tup2f res = self.c_class.project(camera_obj.c_class, screen_obj.c_class)
         return res.data[0], res.data[1]

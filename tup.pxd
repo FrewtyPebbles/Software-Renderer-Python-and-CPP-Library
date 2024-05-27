@@ -1,5 +1,5 @@
 # distutils: language = c++
-cdef extern from "src/tup.h":
+cdef extern from "src/Tup.h":
 
     cdef cppclass tup2f:
         tup2f() except +
