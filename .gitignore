@@ -1,0 +1,7 @@
+*.cpp
+/build/
+/.vscode/
+/.venv/
+*.pyd
+test.png
+!/src/*
