@@ -5,6 +5,8 @@ from camera import Camera, Screen
 from polygon import Polygon
 from mesh import Mesh
 
+# BUG: sometimes test script freezes durring runtime.
+
 dim = (500, 500)
 
 # Use PIL as render medium
@@ -34,7 +36,6 @@ my_mesh = Mesh(
 
 t1 = time.time()
 for poly in my_mesh.get_polygons(my_mesh.vertexes):
-    print(poly)
     projections = poly.project(cam, screen)
     proj1,proj2,proj3= projections
     min_y, max_y = poly.get_vertical_bounds(projections, cam)
