@@ -5,7 +5,8 @@
 #include <algorithm>
 #include <fstream>
 
-mesh::mesh(vector<vec3> vertexes, vector<tup<int, 3>> polygon_inds) : vertexes(vertexes), polygon_inds(polygon_inds), polygons(get_polygons(vertexes)) {
+mesh::mesh(vector<vec3> vertexes, vector<tup<int, 3>> polygon_inds) : vertexes(vertexes), polygon_inds(polygon_inds) {
+    this->polygons = this->get_polygons(vertexes);
 }
 
 vector<polygon> mesh::get_polygons(vector<vec3> vertexes) {
@@ -32,6 +33,7 @@ vector<polygon> mesh::get_polygons(vector<vec3> vertexes) {
             polygons.push_back(polygon(polygon(poly_buffer[0], poly_buffer[1], poly_buffer[2])));
         }
     }
+    std::cout << polygons.size() << "\n";
     return polygons;
 }
 

@@ -1,6 +1,7 @@
 # distutils: language = c++
 from vec3 cimport vec3
 from libcpp.vector cimport vector
+from tup cimport tup3ui8
 
 cdef extern from "src/Camera.h":
     cdef cppclass screen:
@@ -15,6 +16,8 @@ cdef extern from "src/Camera.h":
         vec3 position
         vector[vector[float]] depth_buffer
         vector[vector[float]] cleared_depth_buffer
+        vector[vector[tup3ui8]] frame_buffer
+        vector[vector[tup3ui8]] cleared_frame_buffer
 
 
 cdef class Screen:
@@ -22,3 +25,5 @@ cdef class Screen:
 
 cdef class Camera:
     cdef camera c_class
+
+    cpdef (int, int, int) get_pixel(self, int x, int y)

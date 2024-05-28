@@ -4,11 +4,35 @@
 #include <math.h>
 #include <array>
 #include <iostream>
-
+#include <tuple>
+#include <mutex>
 
 polygon::polygon(vec3 A, vec3 B, vec3 C) : A(A),B(B),C(C) {};
 
-tup2i polygon::get_vertical_bounds(PROJECTIONS projections, camera& camera) {
+std::mutex render_mutex;
+void polygon::render(camera& camera, screen& screen) {
+    
+    // TODO: change color to texturemap color.
+    tup<uint8_t, 3> color = make_tup<uint8_t, 3>({ 255, 255, 255 });
+    vector<std::tuple<int, int, tup3ui8>> local_buffer;
+    PROJECTIONS projections = this->project(camera, screen);
+    tup<int, 2> vert_bounds = this->get_vertical_bounds(projections, camera, screen);
+    for (int y = vert_bounds[0]; y < vert_bounds[1]; y++) {
+        tup<int, 2> hor_bounds = this->get_render_row_range(y, projections, camera, screen);
+        for (int x = hor_bounds[0]; x < hor_bounds[1]; x++) {
+            local_buffer.push_back(std::tuple<int, int, tup3ui8>(x, y, color));
+        }
+    }
+
+    std::lock_guard<std::mutex> guard(render_mutex);
+    std::cout << "Hello" << std::endl;
+    for (std::tuple<int, int, tup3ui8> tupl : local_buffer) {
+        camera.frame_buffer[std::get<0>(tupl)][std::get<1>(tupl)] = std::get<2>(tupl);
+    }
+
+}
+
+tup2i polygon::get_vertical_bounds(PROJECTIONS projections, camera& camera, screen& screen) {
     float min = projections[0][1];
     float max = projections[0][1];
     float curr;
@@ -19,10 +43,10 @@ tup2i polygon::get_vertical_bounds(PROJECTIONS projections, camera& camera) {
         if (curr > max)
             max = curr;
     }
-    return make_tup<int, 2>({std::min(std::max(0, (int)min), camera.view_height-1), std::max(0, std::min(camera.view_height-1, (int)max))});
+    return make_tup<int, 2>({clamp((int)min, 0, screen.height), clamp((int)max, 0, screen.height)});
 }
 
-tup<int, 2> polygon::get_render_row_range(int y, PROJECTIONS projections) {
+tup<int, 2> polygon::get_render_row_range(int y, PROJECTIONS projections, camera& camera, screen& screen) {
     tup<float, 2> p1 = projections[0];
     tup<float, 2> p2 = projections[1];
     tup<float, 2> p3 = projections[2];
@@ -51,7 +75,7 @@ tup<int, 2> polygon::get_render_row_range(int y, PROJECTIONS projections) {
         b = group[3];
         if (floor(y1) < y && y <= floor(y2)){
             if (a != 0.0f) {
-                xs.push_back((int)((y-b)/a));
+                xs.push_back(clamp((int)((y-b)/a), 0, screen.width));
             } else xs.push_back(1);
         }
             

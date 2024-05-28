@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "Tup.h"
 
 using std::vector;
 class vec3;
@@ -12,6 +13,8 @@ public:
     vec3* position;
     vector<vector<float>> depth_buffer;
     vector<vector<float>> cleared_depth_buffer;
+    vector<vector<tup<uint8_t, 3>>> frame_buffer;
+    vector<vector<tup<uint8_t, 3>>> cleared_frame_buffer;
 };
 
 class screen {

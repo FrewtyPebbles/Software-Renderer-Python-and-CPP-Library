@@ -21,16 +21,22 @@ camera::camera(vec3& position, int view_width, int view_height, int view_distanc
     this->view_distance = view_distance;
     
     // create "empty" depth buffer
-
-    vector<vector<float>> outer_vec;
-    vector<float> inner_vec;
+    vector<vector<tup<uint8_t, 3>>> frame_outer_vec;
+    vector<tup<uint8_t, 3>> frame_inner_vec;
+    vector<vector<float>> depth_outer_vec;
+    vector<float> depth_inner_vec;
     for (int i = 0; i < view_width; i++){
-        inner_vec.clear();
+        depth_inner_vec.clear();
+        frame_inner_vec.clear();
         for (int j = 0; j < view_height; j++){
-            inner_vec.push_back(INFINITY);
+            depth_inner_vec.push_back(INFINITY);
+            frame_inner_vec.push_back(make_tup<uint8_t, 3>({0,0,0}));
         }
-        outer_vec.push_back(inner_vec);
+        depth_outer_vec.push_back(depth_inner_vec);
+        frame_outer_vec.push_back(frame_inner_vec);
     }
-    this->cleared_depth_buffer = outer_vec;
-    this->depth_buffer = outer_vec;
+    this->cleared_depth_buffer = depth_outer_vec;
+    this->depth_buffer = depth_outer_vec;
+    this->frame_buffer = frame_outer_vec;
+    this->cleared_frame_buffer = frame_outer_vec;
 }

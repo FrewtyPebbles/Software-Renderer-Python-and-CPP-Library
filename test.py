@@ -4,6 +4,7 @@ from vec3 import Vec3
 from camera import Camera, Screen
 from polygon import Polygon
 from mesh import Mesh
+from object import Object
 
 # BUG: sometimes test script freezes durring runtime.
 
@@ -33,22 +34,15 @@ screen = Screen(500, 500)
 #         (3,4,5)
 #     ]
 # )
-teapot = Mesh.from_obj("meshes/teapot.obj")
+teapot = Object(Mesh.from_obj("meshes/teapot.obj"))
 t1 = time.time()
-for poly in teapot.polygons:
-    projections = poly.project(cam, screen)
-    proj1, proj2, proj3= projections
-    #print("get bounds")
-    min_y, max_y = poly.get_vertical_bounds(projections, cam)
-    #print(min_y, max_y)
-    for y in range(min_y, max_y):
-        #print("\tget_row_range")
-        min_x, max_x = poly.get_render_row_range(y, projections)
-        #print("\t", min(dim[0], max(0, min_x)), max(0, min(dim[0],max_x)))
-        for x in range(min(dim[0], max(0, min_x)), max(0, min(dim[0],max_x))):
-            img_draw.point((x,y), "white")
+teapot.render(cam, screen)
+for x in range(dim[0]):
+    for y in range(dim[1]):
+        #print(cam.get_pixel(x, y))
+        img_draw.point((x,y), cam.get_pixel(x, y))
 t2 = time.time()
 
-print(f"time to render: {(t2-t1) * 1000:0.4f} ms")
+#print(f"time to render: {(t2-t1) * 1000:0.4f} ms")
 
 img.save("test.png")

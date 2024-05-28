@@ -1,6 +1,8 @@
 # distutils: language = c++
-cdef extern from "src/Tup.h":
 
+ctypedef unsigned char uint8
+
+cdef extern from "src/Tup.h":
     cdef cppclass tup2f:
         tup2f() except +
         tup2f(float[2] values) except +
@@ -41,4 +43,9 @@ cdef extern from "src/Tup.h":
         tup4i() except +
         tup4i(int[4] values) except +
         int[4] data
+
+    cdef cppclass tup3ui8:
+        tup3i() except +
+        tup3i(uint8[3] values) except +
+        uint8[3] data
 
