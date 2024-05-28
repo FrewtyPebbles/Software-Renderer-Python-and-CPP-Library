@@ -34,18 +34,27 @@ cdef class Mesh:
             cind = tup3i(cind_arr)
             self.c_class.polygon_inds.push_back(cind)
 
-    cpdef list[Polygon] get_polygons(self, list[Vec3] vertexes):
+    @property
+    def polygons(self) -> list[Polygon]:
         cdef:
-            vector[vec3] verts
-            Vec3 thing
-        for thing in vertexes:
-            verts.push_back(thing.c_class)
-        cdef:
-            vector[polygon] pgons = self.c_class.get_polygons(verts)
+            vector[polygon] pgons = self.c_class.polygons
             list[Polygon] ret = []
-        cdef Polygon POLY
+            Polygon POLY
         for pgon in pgons:
             POLY = Polygon.from_cpp(pgon)
             ret.append(POLY)
             
         return ret
+
+    @staticmethod
+    cdef Mesh from_cpp(mesh cppinst):
+        cdef Mesh ret = Mesh([],[])
+        ret.c_class = cppinst
+        return ret
+
+    @staticmethod
+    def from_obj(file_path:str) -> Mesh:
+        return _from_obj(file_path)
+
+cpdef Mesh _from_obj(str file_path):
+    return Mesh.from_cpp(mesh.from_obj(file_path.encode()))

@@ -1,13 +1,12 @@
 #include "Polygon.h"
 #include "Tup.h"
-#include "Vec3.h"
 #include "Camera.h"
 #include <math.h>
 #include <array>
 #include <iostream>
 
 
-polygon::polygon(vec3& A, vec3& B, vec3& C) : A(&A),B(&B),C(&C) {};
+polygon::polygon(vec3 A, vec3 B, vec3 C) : A(A),B(B),C(C) {};
 
 tup2i polygon::get_vertical_bounds(PROJECTIONS projections, camera& camera) {
     float min = projections[0][1];
@@ -20,7 +19,7 @@ tup2i polygon::get_vertical_bounds(PROJECTIONS projections, camera& camera) {
         if (curr > max)
             max = curr;
     }
-    return make_tup<int, 2>({(int)min, (int)max});
+    return make_tup<int, 2>({std::min(std::max(0, (int)min), camera.view_height-1), std::max(0, std::min(camera.view_height-1, (int)max))});
 }
 
 tup<int, 2> polygon::get_render_row_range(int y, PROJECTIONS projections) {
@@ -62,8 +61,13 @@ tup<int, 2> polygon::get_render_row_range(int y, PROJECTIONS projections) {
 }
 
 tup<tup<float, 2>, 3> polygon::project(camera& camera, screen& screen) {
-    tup<float, 2> p1 = this->A->project(camera, screen);
-    tup<float, 2> p2 = this->B->project(camera, screen);
-    tup<float, 2> p3 = this->C->project(camera, screen);
+    tup<float, 2> p1 = this->A.project(camera, screen);
+    tup<float, 2> p2 = this->B.project(camera, screen);
+    tup<float, 2> p3 = this->C.project(camera, screen);
     return make_tup<tup<float, 2>, 3>({p1,p2,p3});
+}
+
+std::ostream& operator<<(std::ostream& os, const polygon& self) {
+    os << "polygon<" << self.A << ", " << self.B << ", " << self.C << '>';
+    return os;
 }

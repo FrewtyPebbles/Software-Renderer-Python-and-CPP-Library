@@ -1,5 +1,5 @@
 #pragma once
-
+#include <iostream>
 
 // cpp class names are camelcase, python class names are title case
 
@@ -17,5 +17,10 @@ public:
     float y;
     float z;
     tup<float, 2> project(camera& camera, screen& screen);
+
+    friend inline std::ostream& operator<<(std::ostream& os, const vec3& self){
+        os << "vec3<" << self.x << ", " << self.y << ", " << self.z << '>';
+        return os;
+    }
 };
 
