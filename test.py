@@ -43,6 +43,6 @@ for x in range(dim[0]):
         img_draw.point((x,y), cam.get_pixel(x, y))
 t2 = time.time()
 
-#print(f"time to render: {(t2-t1) * 1000:0.4f} ms")
+print(f"time to render: {(t2-t1) * 1000:0.4f} ms")
 
 img.save("test.png")
