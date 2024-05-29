@@ -6,7 +6,7 @@ from polygon import Polygon
 from mesh import Mesh
 from object import Object
 
-# BUG: sometimes test script freezes durring runtime.
+# TODO: trace your steps carefully through the render pipeline and figure out what is breaking.
 
 dim = (500, 500)
 
