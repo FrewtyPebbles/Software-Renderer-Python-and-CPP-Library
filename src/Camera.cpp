@@ -37,6 +37,4 @@ camera::camera(vec3& position, int view_width, int view_height, int view_distanc
     }
     this->cleared_depth_buffer = depth_outer_vec;
     this->depth_buffer = depth_outer_vec;
-    this->frame_buffer = frame_outer_vec;
-    this->cleared_frame_buffer = frame_outer_vec;
 }

@@ -22,7 +22,6 @@ cdef extern from "src/Object.h":
 cdef class Object:
     cdef object3d c_class
 
-    cpdef void init(self, Mesh mesh, Vec3 position, Vec3 rotation, Vec3 scale)
     
     cpdef void render(self, Camera camera, Screen screen)
         

@@ -10,26 +10,24 @@
 polygon::polygon(vec3 A, vec3 B, vec3 C) : A(A),B(B),C(C) {};
 
 std::mutex render_mutex;
-void polygon::render(camera& camera, screen& screen) {
+void polygon::render(camera* camera, screen* screen) {
     
     // TODO: change color to texturemap color.
     tup<uint8_t, 3> color = make_tup<uint8_t, 3>({ 255, 255, 255 });
-    vector<std::tuple<int, int, tup3ui8>> local_buffer;
-    PROJECTIONS projections = this->project(camera, screen);
-    tup<int, 2> vert_bounds = this->get_vertical_bounds(projections, camera, screen);
+    std::vector<pixel> local_buffer;
+    PROJECTIONS projections = this->project(*camera, *screen);
+    tup<int, 2> vert_bounds = this->get_vertical_bounds(projections, *camera, *screen);
     for (int y = vert_bounds[0]; y < vert_bounds[1]; y++) {
-        tup<int, 2> hor_bounds = this->get_render_row_range(y, projections, camera, screen);
+        tup<int, 2> hor_bounds = this->get_render_row_range(y, projections, *camera, *screen);
         for (int x = hor_bounds[0]; x < hor_bounds[1]; x++) {
-            local_buffer.push_back(std::tuple<int, int, tup3ui8>(x, y, color));
+            local_buffer.push_back(pixel(x, y, color));
         }
     }
 
-    std::lock_guard<std::mutex> guard(render_mutex);
-    std::cout << "Hello" << std::endl;
-    for (std::tuple<int, int, tup3ui8> tupl : local_buffer) {
-        camera.frame_buffer[std::get<0>(tupl)][std::get<1>(tupl)] = std::get<2>(tupl);
-    }
-
+    render_mutex.lock();
+    camera->frame_buffer.reserve(camera->frame_buffer.size() + distance(local_buffer.begin(),local_buffer.end()));
+    camera->frame_buffer.insert(camera->frame_buffer.end(),local_buffer.begin(),local_buffer.end());
+    render_mutex.unlock();
 }
 
 tup2i polygon::get_vertical_bounds(PROJECTIONS projections, camera& camera, screen& screen) {

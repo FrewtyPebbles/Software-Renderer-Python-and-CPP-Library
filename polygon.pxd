@@ -13,7 +13,7 @@ cdef extern from "src/Polygon.h":
         vec3 A
         vec3 B
         vec3 C
-        void render(camera& camera, screen& screen)
+        void render(camera* camera, screen* screen)
         tup2i get_vertical_bounds(tup3tup2f projections, camera& camera, screen& screen)
         tup2i get_render_row_range(int y, tup3tup2f projections, camera& camera, screen& screen)
         tup3tup2f project(camera& camera, screen& screen)

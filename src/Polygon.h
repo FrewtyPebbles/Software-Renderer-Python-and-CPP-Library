@@ -20,7 +20,7 @@ public:
     vec3 A;
     vec3 B;
     vec3 C;
-    void render(camera& camera, screen& screen);
+    void render(camera* camera, screen* screen);
     tup<int, 2> get_vertical_bounds(PROJECTIONS projections, camera& camera, screen& screen);
     tup<int, 2> get_render_row_range(int y, PROJECTIONS projections, camera& camera, screen& screen);
     tup<tup<float, 2>, 3> project(camera& camera, screen& screen);

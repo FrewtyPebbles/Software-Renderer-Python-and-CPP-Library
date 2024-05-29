@@ -4,6 +4,13 @@ from libcpp.vector cimport vector
 from tup cimport tup3ui8
 
 cdef extern from "src/Camera.h":
+    cdef cppclass pixel:
+        pixel() except +
+        pixel(int x, int y, tup3ui8 color) except +
+        int x
+        int y
+        tup3ui8 color
+
     cdef cppclass screen:
         screen() except +
         screen(int width, int height) except +
@@ -16,8 +23,7 @@ cdef extern from "src/Camera.h":
         vec3 position
         vector[vector[float]] depth_buffer
         vector[vector[float]] cleared_depth_buffer
-        vector[vector[tup3ui8]] frame_buffer
-        vector[vector[tup3ui8]] cleared_frame_buffer
+        vector[pixel] frame_buffer
 
 
 cdef class Screen:
@@ -26,4 +32,4 @@ cdef class Screen:
 cdef class Camera:
     cdef camera c_class
 
-    cpdef (int, int, int) get_pixel(self, int x, int y)
+    # cpdef (int, int, (int, int, int)) get_pixel(self)

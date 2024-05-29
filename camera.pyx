@@ -10,6 +10,12 @@ cdef class Camera:
     def __init__(self, Vec3 position, int view_width, int view_height, int view_distance) -> None:
         self.c_class = camera(position.c_class, view_width, view_height, view_distance)
 
-    cpdef (int, int, int) get_pixel(self, int x, int y):
-        cdef tup3ui8 tupl = self.c_class.frame_buffer[x][y]
-        return <int>tupl.data[0], <int>tupl.data[1], <int>tupl.data[2]
+    def  get_pixel(self) -> tuple[int, int, tuple[int, int, int]]:
+        cdef pixel* pixl
+        cdef tup3ui8 color
+        while self.c_class.frame_buffer.size() > 0:
+            pixl = &self.c_class.frame_buffer.back()
+            self.c_class.frame_buffer.pop_back()
+            color = pixl.color
+            yield ( pixl.x, pixl.y, ( color.data[0], color.data[1], color.data[2] ) )
+        

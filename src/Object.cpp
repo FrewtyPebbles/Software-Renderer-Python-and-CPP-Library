@@ -7,7 +7,6 @@
 object::object(mesh& mesh, vec3 position, vec3 rotation, vec3 scale) : mesh_data(&mesh), position(position), rotation(rotation), scale(scale) {}
 
 void object::render(camera& camera, screen& screen) {
-    std::cout << this->mesh_data->vertexes.size() << " M_VERT\n";
     vector<polygon> polygons = this->mesh_data->get_polygons(
         this->get_translation(
             this->get_rotation(
@@ -18,12 +17,13 @@ void object::render(camera& camera, screen& screen) {
     vector<std::thread*> threads;
     size_t p_len = polygons.size();
     for (size_t i = 0; i < p_len; i++) {
-        threads.push_back(new std::thread(&polygon::render, &polygons[i], camera, screen));
+        threads.push_back(&std::thread(&polygon::render, &polygons[i], &camera, &screen));
     }
     for (std::thread* thread : threads) {
         thread->join();
-        delete thread;
+        //delete thread;
     }
+    std::cout << camera.frame_buffer.size() << " SIZE\n";
 }
 
 vector<vec3> object::get_translation(vector<vec3> vertexes) {

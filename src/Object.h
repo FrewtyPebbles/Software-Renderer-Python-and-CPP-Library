@@ -11,10 +11,11 @@ public:
     object() {};
     object(mesh& mesh, vec3 position, vec3 rotation, vec3 scale);
     
+    mesh* mesh_data;
     vec3 position;
     vec3 rotation;
     vec3 scale;
-    mesh* mesh_data;
+    
     void render(camera& camera, screen& screen);
     vector<vec3> get_translation(vector<vec3> vertexes);
     vector<vec3> get_rotation(vector<vec3> vertexes);
