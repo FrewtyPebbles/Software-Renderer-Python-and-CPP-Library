@@ -31,9 +31,9 @@ void polygon::render(camera* camera, screen* screen) {
         hor_bounds = this->get_render_row_range(y, projections, camera, screen);
         for (int x = hor_bounds[0]; x < hor_bounds[1]; x++) {
             z = this->bary_get_z(x, y, projections);
-            render_mut.lock();
+            //render_mut.lock();
             d_check = camera->depth_buffer[x][y] > z;
-            render_mut.unlock();
+            //render_mut.unlock();
             if (d_check) {
                 shade = std::max(0, (255 - static_cast<int>(z/130*255)));
                 color = make_tup<uint8_t, 3>({ shade, shade, shade });
@@ -58,7 +58,7 @@ tup2i polygon::get_vertical_bounds(PROJECTIONS projections, camera* camera, scre
         if (curr > max)
             max = curr;
     }
-    return make_tup<int, 2>({c_max2((int)min, 0), c_min2((int)max, screen->height)});
+    return make_tup<int, 2>({clamp((int)min, 0, screen->height), clamp((int)max, 0, screen->height)});
 }
 
 tup<int, 2> polygon::get_render_row_range(int y, PROJECTIONS projections, camera* camera, screen* screen) {
@@ -90,10 +90,7 @@ tup<int, 2> polygon::get_render_row_range(int y, PROJECTIONS projections, camera
         b = group[3];
         if (floor(y1) < y && y <= floor(y2)){
             //std::cout << floor(y1) << " < " << y << " <= " << floor(y2) << ", a=" << a << ", b=" << b << ", (int)(y-b)/a=" << (int)((y-b)/a + 0.5f) << std::endl;
-            // if (a != 0.0f) {
-            //     xs.push_back(static_cast<int>((y-b)/a + 0.5f));
-            // } else xs.push_back(1);
-            xs.push_back((int)((y-b)/a));
+            xs.push_back(clamp((int)((y-b)/a), 0, screen->width));
         }
             
     }
