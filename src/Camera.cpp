@@ -4,18 +4,27 @@
 screen::screen() {
     this->width = 500;
     this->height = 500;
+    this->threadpool = new ThreadPool();
+    this->threadpool->Start();
 }
 
 screen::screen(int width, int height) {
     this->width = width;
     this->height = height;
+    this->threadpool = new ThreadPool();
+    this->threadpool->Start();
+}
+
+screen::~screen() {
+    this->threadpool->Stop();
+    delete threadpool;
 }
 
 camera::camera() {}
 
 
-camera::camera(vec3& position, int view_width, int view_height, int view_distance) {
-    this->position = &position;
+camera::camera(vec3* position, int view_width, int view_height, int view_distance) {
+    this->position = position;
     this->view_width = view_width;
     this->view_height = view_height;
     this->view_distance = view_distance;
@@ -37,4 +46,4 @@ camera::camera(vec3& position, int view_width, int view_height, int view_distanc
     }
     this->cleared_depth_buffer = depth_outer_vec;
     this->depth_buffer = depth_outer_vec;
-}
+}  

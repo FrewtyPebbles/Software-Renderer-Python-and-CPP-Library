@@ -11,8 +11,7 @@ cdef class Object:
 
 
     cpdef void render(self, Camera camera, Screen screen):
-        print(self.c_class.mesh_data[0].vertexes.size(), "VERT CYTH")
-        self.c_class.render(camera.c_class, screen.c_class)
+        self.c_class.render(camera.c_class, screen.c_class[0])
 
 
 

@@ -4,36 +4,20 @@
 #include "Vec3.h"
 #include <algorithm>
 #include <fstream>
-
+#include <iostream>
+ 
 mesh::mesh(vector<vec3> vertexes, vector<tup<int, 3>> polygon_inds) : vertexes(vertexes), polygon_inds(polygon_inds) {
     this->polygons = this->get_polygons(vertexes);
 }
-
+ 
 vector<polygon> mesh::get_polygons(vector<vec3> vertexes) {
     
     vector<polygon> polygons;
-    vector<vec3> poly_buffer;
-    
-    for (tup3i v_inds : this->polygon_inds) {
-        poly_buffer.clear();
-        size_t inds_len = sizeof(v_inds.data)/sizeof(int);
-        size_t i;
-        for (i = 0; i < inds_len; i++) {
-            if (poly_buffer.size() == 2) {
-                poly_buffer.push_back(vertexes[v_inds.data[i]]);
-                polygons.push_back(polygon(poly_buffer[0], poly_buffer[1], poly_buffer[2]));
-                poly_buffer.clear();
-                poly_buffer.push_back(vertexes[v_inds.data[i]]);
-            } else {
-                poly_buffer.push_back(vertexes[v_inds.data[i]]);
-            }
-        }
-        if (poly_buffer.size() == 2) {
-            poly_buffer.push_back(vertexes[0]);
-            polygons.push_back(polygon(polygon(poly_buffer[0], poly_buffer[1], poly_buffer[2])));
-        }
+    auto p_inds = this->polygon_inds;
+    for (tup3i v_inds : p_inds) {
+        polygons.push_back(polygon(vertexes[v_inds[0]], vertexes[v_inds[1]], vertexes[v_inds[2]]));
     }
-    std::cout << polygons.size() << "\n";
+    //print_vec(polygons);
     return polygons;
 }
 
@@ -42,7 +26,7 @@ mesh mesh::from_obj(string file_path) {
     vector<tup<int, 3>> polygons;
     vector<string> tokens;
     string _, x, y, z, line, prefix;
-    
+    vector<int> face, poly_buffer;
 
     std::ifstream file(file_path);
     while (std::getline(file, line)) {
@@ -65,21 +49,22 @@ mesh mesh::from_obj(string file_path) {
             );
         }
         else if (prefix == "f") {
-            vector<int> face;
-            vector<int> poly_buffer;
+            face.clear();
             face = mesh::parse_face(std::vector<std::string>(tokens.begin()+1, tokens.end()));
             size_t face_len = face.size();
+            size_t last_ind = face_len-1;
+            poly_buffer.clear();
             size_t i;
             for (i = 0; i < face_len; i++) {
                 if (poly_buffer.size() == 2) {
-                    poly_buffer.push_back(poly_buffer[0]);
+                    poly_buffer.push_back(face[last_ind]);
                     polygons.push_back(make_tup<int, 3>({poly_buffer[0], poly_buffer[1], poly_buffer[2]}));
                     poly_buffer.clear();
                     poly_buffer.push_back(face[i-1]);
                 }
                 poly_buffer.push_back(face[i]);
             }
-            poly_buffer.push_back(poly_buffer[0]);
+            poly_buffer.push_back(face[last_ind]);
             polygons.push_back(make_tup<int, 3>({poly_buffer[0], poly_buffer[1], poly_buffer[2]}));
         }
         else if (prefix == "vt") {

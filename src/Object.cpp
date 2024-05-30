@@ -1,8 +1,10 @@
 #include "Object.h"
 #include "Camera.h"
 #include "Polygon.h"
-#include <thread>
 #include "Mesh.h"
+#include <chrono>
+#include <thread>
+
 
 object::object(mesh& mesh, vec3 position, vec3 rotation, vec3 scale) : mesh_data(&mesh), position(position), rotation(rotation), scale(scale) {}
 
@@ -12,26 +14,28 @@ void object::render(camera& camera, screen& screen) {
             this->get_rotation(
                 this->mesh_data->vertexes
             )
-        )
+        ) 
     );
     vector<std::thread*> threads;
     size_t p_len = polygons.size();
+    std::cout << "START RENDER" << std::endl;
     for (size_t i = 0; i < p_len; i++) {
-        threads.push_back(&std::thread(&polygon::render, &polygons[i], &camera, &screen));
+        screen.threadpool->QueueJob(std::bind(&polygon::render, &polygons[i], &camera, &screen));
+        // polygons[i].render(&camera, &screen);
     }
-    for (std::thread* thread : threads) {
-        thread->join();
-        //delete thread;
-    }
-    std::cout << camera.frame_buffer.size() << " SIZE\n";
+    while (screen.threadpool->busy()){}
+    // screen.threadpool->Stop();
+    std::cout << "END RENDER" << std::endl;
 }
-
+ 
 vector<vec3> object::get_translation(vector<vec3> vertexes) {
     vector<vec3> ret_verts;
     vec3 pos = this->position;
+    //std::cout << pos << "\n";
     for (vec3 vert : vertexes) {
         ret_verts.push_back(vert + pos);
     }
+    //print_vec(ret_verts);
     return ret_verts;
 }
 
@@ -42,4 +46,11 @@ vector<vec3> object::get_rotation(vector<vec3> vertexes) {
         ret_verts.push_back(vert.rotate(rot));
     }
     return ret_verts;
+}
+
+template<typename T>
+void print_vec(vector<T> in) {
+    for (T thing : in)
+        std::cout << thing << ", ";
+    std::cout << "|||endvec\n";
 }

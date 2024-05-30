@@ -31,16 +31,16 @@ cdef class Polygon:
         return ret
 
     cpdef (int, int) get_vertical_bounds(self, PROJECTIONS projections, Camera camera, Screen screen):
-        cdef tup2i res = self.c_class.get_vertical_bounds(conv_proj_tuples(projections), camera.c_class, screen.c_class)
+        cdef tup2i res = self.c_class.get_vertical_bounds(conv_proj_tuples(projections), &camera.c_class, screen.c_class)
         return res.data[0], res.data[1]
 
     cpdef (int, int) get_render_row_range(self, int y, PROJECTIONS projections, Camera camera, Screen screen):
-        cdef tup2i res = self.c_class.get_render_row_range(y, conv_proj_tuples(projections), camera.c_class, screen.c_class)
+        cdef tup2i res = self.c_class.get_render_row_range(y, conv_proj_tuples(projections), &camera.c_class, screen.c_class)
         return res.data[0], res.data[1]
 
     cpdef PROJECTIONS project(self, Camera camera, Screen screen):
 
-        cdef tup3tup2f res = self.c_class.project(camera.c_class, screen.c_class)
+        cdef tup3tup2f res = self.c_class.project(&camera.c_class, screen.c_class)
 
         return (
             (res.data[0].data[0], res.data[0].data[1]),

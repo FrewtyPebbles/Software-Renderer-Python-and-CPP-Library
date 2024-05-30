@@ -18,8 +18,17 @@ img_draw = ImageDraw.Draw(img)
 
 cam = Camera(Vec3(0.0,0.0,0.0), *dim, 200)
 screen = Screen(500, 500)
-tp = Mesh.from_obj("meshes/teapot.obj")
-teapot = Object(tp, Vec3(0.0,0.0,100.0))
+tp = Mesh(
+    [
+        Vec3(0,0,0),
+        Vec3(0,1,0),
+        Vec3(1,1,0)
+    ],
+    [
+        (0,1,2)
+    ]
+)
+teapot = Object(tp, Vec3(0.0,0.0,7.0), Vec3(0,3.1,0))
 t1 = time.time()
 teapot.render(cam, screen)
 for x, y, color in cam.get_pixel():

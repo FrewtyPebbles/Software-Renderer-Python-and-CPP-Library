@@ -6,10 +6,11 @@
 template<typename T, size_t N>
 class tup {
 public:
-    tup() : data{} {}
+    tup() : data{}, size(N) {}
     tup(T values[N]) {
         memcpy(data, values, sizeof(T)*N);
     }
+    tup(const tup& o) = default;
     
     T& operator[](size_t index) {
         if (index >= N) {
@@ -19,12 +20,20 @@ public:
     }
 
     T data[N];
+    size_t size = N;
     friend inline std::ostream& operator<<(std::ostream& os, const tup<T, N>& self){
         os << '(';
         for (int i = 0; i < N; i++)
             os << self.data[i] << ',';
         os << ')';
         return os;
+    }
+    inline constexpr auto* begin() {
+        return std::cbegin(this->data);
+    }
+
+    inline constexpr auto* end() {
+        return std::cend(this->data);
     }
 };
 

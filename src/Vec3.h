@@ -10,13 +10,13 @@ class screen;
 
 class vec3 {
 public:
-    vec3();
-    vec3(float x, float y, float z);
+    vec3()=default;
+    vec3(float x, float y, float z) : x(x),y(y),z(z) {}
     vec3(const vec3& rhs) : x(rhs.x),y(rhs.y),z(rhs.z) {}
-    float x;
-    float y;
-    float z;
-    tup<float, 2> project(camera& camera, screen& screen);
+    float x = 0.0f;
+    float y = 0.0f;
+    float z = 0.0f;
+    tup<float, 2> project(camera* camera, screen* screen);
 
     friend inline std::ostream& operator<<(std::ostream& os, const vec3& self){
         os << "vec3<" << self.x << ", " << self.y << ", " << self.z << '>';
@@ -48,7 +48,6 @@ public:
     inline vec3 rotate(vec3 rotation) {
         vec3 new_vec = *this;
         float x, y, z;
-
         
         for (tup<vec3, 3> rot : vec3::get_rotation_matrix(rotation).data) {
             x = new_vec.x;
@@ -60,7 +59,7 @@ public:
                 std::fmaf(rot[2].x, x, std::fmaf(rot[2].y, y, rot[2].z*z))
             );
         }
-            
+        
         return new_vec;
     }
 

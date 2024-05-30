@@ -9,7 +9,7 @@ cdef extern from "src/Vec3.h":
         float x
         float y
         float z
-        tup2f project(camera& camera, screen& screen)
+        tup2f project(camera* camera, screen* screen)
 
         # operators
         vec3 operator+(vec3& other)
