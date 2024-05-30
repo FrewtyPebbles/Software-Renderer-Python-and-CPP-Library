@@ -22,12 +22,16 @@ print("create screen")
 screen = Screen(500, 500)
 print("load mesh")
 tp = Mesh.from_obj("meshes/teapot.obj")
-teapot = Object(tp, Vec3(0.0,-50.0,100.0))
+teapot = Object(tp, Vec3(0.0,-30.0,110), Vec3(3.75,2.32,5.7))
 print("Loaded mesh!")
 t1 = time.time()
+cppt1 = time.time()
 teapot.render(cam, screen)
+cppt2 = time.time()
+print(f"cpp time to render: {(cppt2-cppt1) * 1000:0.4f} ms")
 rasterize(img_draw, cam)
 t2 = time.time()
+
 
 print(f"time to render: {(t2-t1) * 1000:0.4f} ms")
 

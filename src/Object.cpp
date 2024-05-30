@@ -9,6 +9,7 @@
 object::object(mesh& mesh, vec3 position, vec3 rotation, vec3 scale) : mesh_data(&mesh), position(position), rotation(rotation), scale(scale) {}
 
 void object::render(camera& camera, screen& screen) {
+    std::cout << "Threads available: " << std::thread::hardware_concurrency() << std::endl;
     vector<polygon> polygons = this->mesh_data->get_polygons(
         this->get_translation(
             this->get_rotation(

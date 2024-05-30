@@ -27,7 +27,7 @@ public:
     tup<int, 2> get_vertical_bounds(PROJECTIONS projections, camera* camera, screen* screen);
     tup<int, 2> get_render_row_range(int y, PROJECTIONS projections, camera* camera, screen* screen);
     tup<tup<float, 2>, 3> project(camera* camera, screen* screen);
-    float bary_get_z(int x, int y);
+    float bary_get_z(int x, int y, PROJECTIONS proj);
 
     friend std::ostream& operator<<(std::ostream& os, const polygon& self);
 };
