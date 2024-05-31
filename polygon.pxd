@@ -10,9 +10,16 @@ cdef extern from "src/Polygon.h":
     cdef cppclass polygon:
         polygon() except +
         polygon(vec3 A, vec3 B, vec3 C) except +
+        polygon(vec3 A,vec3 B,vec3 C,vec3 A_tex,vec3 B_tex,vec3 C_tex,vec3 A_norm,vec3 B_norm,vec3 C_norm)
         vec3 A
         vec3 B
         vec3 C
+        vec3 A_tex
+        vec3 B_tex
+        vec3 C_tex
+        vec3 A_norm
+        vec3 B_norm
+        vec3 C_norm
         void render(camera* camera, screen* screen)
         tup2i get_vertical_bounds(tup3tup2f projections, camera* camera, screen* screen)
         tup2i get_render_row_range(int y, tup3tup2f projections, camera* camera, screen* screen)

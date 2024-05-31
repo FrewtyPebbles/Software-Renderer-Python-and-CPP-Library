@@ -1,12 +1,16 @@
 # distutils: language = c++
 from vec3 cimport Vec3
 from polygon cimport Polygon
+from libcpp.vector cimport vector
 
 
 
 cdef class Mesh:
-    def __init__(self, list[Vec3] vertexes, list[(int,int,int)] polygon_inds):
-        self.init(vertexes, polygon_inds)
+    def __init__(self):
+        self.c_class = new mesh()
+
+    def __dealloc__(self):
+        del self.c_class
 
     @property
     def vertexes(self) -> list[Vec3]:
@@ -20,36 +24,14 @@ cdef class Mesh:
             ret.append(current_vec)
         return ret
 
-
-    cpdef init(self, list[Vec3] vertexes, list[(int,int,int)] polygon_inds):
-        self.c_class = mesh()
-        cdef Vec3 vec
-        for vec in vertexes:
-            self.c_class.vertexes.push_back(vec.c_class)
-        cdef int[3] cind_arr
-        cdef tup3i cind
-        cdef (int,int,int) ind
-        for ind in polygon_inds:
-            cind_arr = [ind[0], ind[1], ind[2]]
-            cind = tup3i(cind_arr)
-            self.c_class.polygon_inds.push_back(cind)
-
-    @property
-    def polygons(self) -> list[Polygon]:
-        cdef:
-            vector[polygon] pgons = self.c_class.polygons
-            list[Polygon] ret = []
-            Polygon POLY
-        for pgon in pgons:
-            POLY = Polygon.from_cpp(pgon)
-            ret.append(POLY)
-            
-        return ret
-
     @staticmethod
     cdef Mesh from_cpp(mesh cppinst):
-        cdef Mesh ret = Mesh([],[])
-        ret.c_class = cppinst
+        cdef Mesh ret = Mesh()
+        ret.c_class.materials = cppinst.materials
+        ret.c_class.faces = cppinst.faces
+        ret.c_class.vertexes = cppinst.vertexes
+        ret.c_class.vertex_normals = cppinst.vertex_normals
+        ret.c_class.texture_vertexes = cppinst.texture_vertexes
         return ret
 
     @staticmethod

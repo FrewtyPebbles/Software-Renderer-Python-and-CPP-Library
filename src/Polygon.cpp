@@ -9,7 +9,7 @@
 #include <mutex>
 #include "threadpool.h"
 #include "util.h"
-
+ 
 
 float polygon::bary_get_z(int x, int y, PROJECTIONS proj) {
     tup<float, 3> b_coords = barycentric_coords(proj[0][0], proj[0][1], proj[1][0], proj[1][1], proj[2][0], proj[2][1], x, y);
@@ -25,21 +25,17 @@ void polygon::render(camera* camera, screen* screen) {
     PROJECTIONS projections = this->project(camera, screen);
     tup<int, 2> vert_bounds = this->get_vertical_bounds(projections, camera, screen);
     float z;
-    bool d_check;
     
     for (int y = vert_bounds[0]; y < vert_bounds[1]; y++) {
         hor_bounds = this->get_render_row_range(y, projections, camera, screen);
         for (int x = hor_bounds[0]; x < hor_bounds[1]; x++) {
             z = this->bary_get_z(x, y, projections);
-            //render_mut.lock();
-            d_check = camera->depth_buffer[x][y] > z;
-            //render_mut.unlock();
-            if (d_check) {
+            if (camera->depth_buffer[x][y] > z) {
                 shade = std::max(0, (255 - static_cast<int>(z/130*255)));
                 color = make_tup<uint8_t, 3>({ shade, shade, shade });
+                camera->depth_buffer[x][y] = z;
                 render_mut.lock();
                 camera->frame_buffer.push_back(pixel(x, y, color));
-                camera->depth_buffer[x][y] = z;
                 render_mut.unlock();
             }
         }
@@ -71,9 +67,9 @@ tup<int, 2> polygon::get_render_row_range(int y, PROJECTIONS projections, camera
     float a1 = denom1 != 0.0f ? (p2[1]-p1[1])/denom1 : 1.0f;
     float a2 = denom2 != 0.0f ? (p3[1]-p2[1])/denom2 : 1.0f;
     float a3 = denom3 != 0.0f ? (p1[1]-p3[1])/denom3 : 1.0f;
-    float b1 = p1[1]-a1*p1[0];
-    float b2 = p2[1]-a2*p2[0];
-    float b3 = p3[1]-a3*p3[0];
+    float b1 = fmaf(-a1, p1[0], p1[1]);
+    float b2 = fmaf(-a2, p2[0], p2[1]);
+    float b3 = fmaf(-a3, p3[0], p3[1]);
     
     float y1,y2,a,b;
     vector<int> xs = {};

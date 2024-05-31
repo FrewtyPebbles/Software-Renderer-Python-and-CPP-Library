@@ -9,7 +9,7 @@ class screen;
 class object {
 public:
     object() {};
-    object(mesh& mesh, vec3 position, vec3 rotation, vec3 scale);
+    object(mesh* mesh, vec3 position, vec3 rotation, vec3 scale);
     
     mesh* mesh_data;
     vec3 position;

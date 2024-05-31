@@ -49,7 +49,7 @@ public:
         vec3 new_vec = *this;
         float x, y, z;
         
-        for (tup<vec3, 3> rot : vec3::get_rotation_matrix(rotation).data) {
+        for (tup<vec3, 3> rot : vec3::get_rotation_matrix(rotation)) {
             x = new_vec.x;
             y = new_vec.y;
             z = new_vec.z;

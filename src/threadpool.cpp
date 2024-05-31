@@ -20,9 +20,15 @@ void ThreadPool::ThreadLoop() {
                 return;
             }
             job = jobs.front();
+            busycounter++;
             jobs.pop();
+            
         }
         job();
+        {
+            std::unique_lock<std::mutex> lock(queue_mutex);
+            busycounter--;
+        }
     }
 }
 
@@ -38,7 +44,7 @@ bool ThreadPool::busy() {
     bool poolbusy;
     {
         std::unique_lock<std::mutex> lock(queue_mutex);
-        poolbusy = !jobs.empty();
+        poolbusy = !jobs.empty() || busycounter > 0;
     }
     return poolbusy;
 }
