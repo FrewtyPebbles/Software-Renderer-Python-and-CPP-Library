@@ -10,14 +10,13 @@ PY_PATH = "./"
 C_PATH = path.join(path.dirname(__file__), "src/")
 
 INCLUDE_DIRS = [
-    getenv("OPENCV_INC")
+    getenv("INC_DIR")
 ]
 LIBRARY_DIRS = [
-    getenv("OPENCV_LIB")
+    getenv("LIB_DIR")
 ]
 LIBRARIES = [
-    'opencv_world490',
-    'opencv_world490d'
+    'opencv_core4', 'opencv_highgui4', "opencv_imgcodecs4", "opencv_imgproc4"
 ]
 EXTENSIONS = [
     Extension('renderer', [
