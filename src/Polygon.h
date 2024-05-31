@@ -13,6 +13,7 @@ template<typename T, size_t N>
 class tup;
 class camera;
 class screen;
+class mesh;
 
 typedef tup<tup<float, 2>, 3> PROJECTIONS;
 
@@ -29,7 +30,8 @@ public:
       vec3 C_tex,
       vec3 A_norm,
       vec3 B_norm,
-      vec3 C_norm
+      vec3 C_norm,
+      mesh* mesh
     ) :
       A(A),
       B(B),
@@ -39,7 +41,8 @@ public:
       C_tex(C_tex),
       A_norm(A_norm),
       B_norm(B_norm),
-      C_norm(C_norm)
+      C_norm(C_norm),
+      mesh(mesh)
     {};
     vec3 A;
     vec3 B;
@@ -50,6 +53,7 @@ public:
     vec3 A_norm;
     vec3 B_norm;
     vec3 C_norm;
+    mesh* mesh;
     void render(camera* camera, screen* screen);
     tup<int, 2> get_vertical_bounds(PROJECTIONS projections, camera* camera, screen* screen);
     tup<int, 2> get_render_row_range(int y, PROJECTIONS projections, camera* camera, screen* screen);

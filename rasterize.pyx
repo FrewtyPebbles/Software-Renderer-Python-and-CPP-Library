@@ -1,3 +1,5 @@
+# distutils: language = c++
+
 from camera cimport Camera, pixel
 from tup cimport tup3ui8, uint8
 from cython.operator cimport dereference

@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include "Tup.h"
+#include <opencv2/opencv.hpp>
 
 using std::vector;
 using std::string;
@@ -19,6 +20,7 @@ struct material {
     float specular_exponent, optical_density, transparency;
     illum_model illumination_model;
     string ambient_tex_file, diffuse_tex_file, specular_highlight_file;
+    cv::Mat ambient_texture, diffuse_texture, specular_highlight_texture;
 };
 
 class vec3;
@@ -82,7 +84,7 @@ inline std::vector<std::string> split(std::string const &input) {
 template<typename T>
 void print_vec(vector<T> in);
 
-inline int sub_str_ind(const std::string& haystack, const std::string& needle, int nth)
+inline size_t sub_str_ind(const std::string& haystack, const std::string& needle, int nth)
 {
     size_t  pos = 0;
     int     cnt = 0;

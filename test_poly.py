@@ -1,10 +1,6 @@
 import time
 from PIL import Image, ImageDraw
-from vec3 import Vec3
-from camera import Camera, Screen
-from polygon import Polygon
-from mesh import Mesh
-from object import Object
+from renderer import Vec3, Camera, Screen, Polygon, Mesh, Object
 
 # TODO: trace your steps carefully through the render pipeline and figure out what is breaking.
 
@@ -14,7 +10,7 @@ dim = (500, 500)
 img = Image.new("RGB", dim)
 img_draw = ImageDraw.Draw(img)
 
-
+ 
 
 cam = Camera(Vec3(0.0,0.0,0.0), *dim, 200)
 screen = Screen(500, 500)

@@ -29,7 +29,8 @@ vector<polygon> mesh::get_polygons(vector<vec3> vertexes) {
                 vn_inds[2] != -1 ? this->texture_vertexes[vn_inds[2]] : vec3(),
                 vn_inds[0] != -1 ? this->vertex_normals[vn_inds[0]] : vec3(),
                 vn_inds[1] != -1 ? this->vertex_normals[vn_inds[1]] : vec3(),
-                vn_inds[2] != -1 ? this->vertex_normals[vn_inds[2]] : vec3()
+                vn_inds[2] != -1 ? this->vertex_normals[vn_inds[2]] : vec3(),
+                this
             ));
     }
     //print_vec(polygons);
@@ -220,7 +221,7 @@ vector<tup<int, 3>> mesh::parse_face(vector<string> tokens) {
 }
 
 vector<material> mesh::get_material(string file_path) {
-    string r, g, b, line, prefix;
+    string r, g, b, line, prefix, fpath;
     vector<string> tokens;
     std::ifstream file(file_path);
     vector<material> ret_mats;
@@ -322,9 +323,12 @@ vector<material> mesh::get_material(string file_path) {
                             case 'a':
                                 ret_mats.back().ambient_tex_file = tokens[1];
                                 break;
-
+ 
                             case 'd':
                                 ret_mats.back().diffuse_tex_file = tokens[1];
+                                fpath = file_path.substr(0, file_path.find_last_of("\\/"));
+                                fpath += tokens[1];
+                                ret_mats.back().diffuse_texture = cv::imread(fpath);
                                 break;
                             
                             default:

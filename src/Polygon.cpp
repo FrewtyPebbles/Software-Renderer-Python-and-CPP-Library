@@ -9,11 +9,19 @@
 #include <mutex>
 #include "threadpool.h"
 #include "util.h"
- 
+#include "Mesh.h"
 
 float polygon::bary_get_z(int x, int y, PROJECTIONS proj) {
     tup<float, 3> b_coords = barycentric_coords(proj[0][0], proj[0][1], proj[1][0], proj[1][1], proj[2][0], proj[2][1], x, y);
     return fmaf(A.z, b_coords[0], fmaf(B.z, b_coords[1], C.z*b_coords[2]));
+}
+
+tup<int, 2> polygon::get_texture_coordinates(int x, int y, PROJECTIONS proj) {
+    tup<float, 3> b_coords = barycentric_coords(proj[0][0], proj[0][1], proj[1][0], proj[1][1], proj[2][0], proj[2][1], x, y);
+    return make_tup<int, 2>({
+        static_cast<int>(fmaf(A_tex.x, b_coords[0], fmaf(B_tex.x, b_coords[1], C_tex.x*b_coords[2]))),
+        static_cast<int>(fmaf(A_tex.y, b_coords[0], fmaf(B_tex.y, b_coords[1], C_tex.y*b_coords[2])))
+    });
 }
 
 void polygon::render(camera* camera, screen* screen) {
@@ -21,7 +29,7 @@ void polygon::render(camera* camera, screen* screen) {
     uint8_t shade;
     tup<uint8_t, 3> color;
     //vector<pixel> local_buffer;
-    tup<int, 2> hor_bounds;
+    tup<int, 2> hor_bounds, tex_coords;
     PROJECTIONS projections = this->project(camera, screen);
     tup<int, 2> vert_bounds = this->get_vertical_bounds(projections, camera, screen);
     float z;
@@ -31,8 +39,10 @@ void polygon::render(camera* camera, screen* screen) {
         for (int x = hor_bounds[0]; x < hor_bounds[1]; x++) {
             z = this->bary_get_z(x, y, projections);
             if (camera->depth_buffer[x][y] > z) {
-                shade = std::max(0, (255 - static_cast<int>(z/130*255)));
-                color = make_tup<uint8_t, 3>({ shade, shade, shade });
+                tex_coords = this->get_texture_coordinates(x,y,projections);
+                auto cvcolor = this->mesh->materials[0].diffuse_texture.at<cv::Vec3b>(tex_coords[1],tex_coords[0]);
+                //shade = std::max(0, (255 - static_cast<int>(z/130*255)));
+                color = make_tup<uint8_t, 3>({ cvcolor[0], cvcolor[1], cvcolor[2] });
                 camera->depth_buffer[x][y] = z;
                 render_mut.lock();
                 camera->frame_buffer.push_back(pixel(x, y, color));

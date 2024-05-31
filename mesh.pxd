@@ -5,9 +5,13 @@ from vec3 cimport vec3, Vec3
 from polygon cimport polygon, Polygon
 from libcpp.string cimport string
 
+cdef extern from "opencv2/opencv.hpp" namespace "cv":
+    cdef cppclass Mat:
+        pass
+
 cdef extern from "src/Mesh.h":
     cpdef enum class illum_model(int):
-        CONSTANT_COLOR,
+        CONSTANT_COLOR, 
         DIFFUSE,
         DIFFUSE_AND_SPECULAR
 
@@ -17,6 +21,7 @@ cdef extern from "src/Mesh.h":
         float specular_exponent, optical_density, transparency
         illum_model illumination_model
         string ambient_tex_file, diffuse_tex_file, specular_highlight_file
+        Mat ambient_texture, diffuse_texture, specular_highlight_texture
 
     cdef cppclass face:
         face() except +

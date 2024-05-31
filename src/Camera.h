@@ -42,8 +42,8 @@ public:
     vector<vector<float>> depth_buffer;
     vector<vector<float>> cleared_depth_buffer;
     vector<pixel> frame_buffer;
-};
-
+}; 
+ 
 class screen {
 public:
     screen();

@@ -1,11 +1,6 @@
 import time
 from PIL import Image, ImageDraw
-from vec3 import Vec3
-from camera import Camera, Screen
-from polygon import Polygon
-from mesh import Mesh
-from object import Object
-from rasterize import rasterize
+from renderer import Vec3, Camera, Screen, Polygon, Mesh, Object, rasterize
 
 # TODO: trace your steps carefully through the render pipeline and figure out what is breaking.
 
