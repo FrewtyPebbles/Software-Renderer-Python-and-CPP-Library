@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-PY_PATH = "./"
+PY_PATH = path.dirname(__file__)
 
 C_PATH = path.join(path.dirname(__file__), "src/")
 
