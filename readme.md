@@ -6,7 +6,7 @@ Here are some rendering tests using this library and PIL as a render medium:
 
 First render after porting over position/rotation:
 
-![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/tests/rotating_teapot.gif)
+![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/tests%2Frotating%20teapot.gif)
 
 Latest success using barycentric coordinates for depth buffering:
 
