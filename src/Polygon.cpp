@@ -29,8 +29,7 @@ tup<int, 2> polygon::get_texture_coordinates(int x, int y, PROJECTIONS proj, int
 }
  
 void polygon::render(camera* camera, screen* screen) {
-    // TODO: change color to texturemap color.
-    uint8_t shade;
+    int shade;
     tup<uint8_t, 3> color;
     //vector<pixel> local_buffer;
     tup<int, 2> hor_bounds, tex_coords;
@@ -49,8 +48,13 @@ void polygon::render(camera* camera, screen* screen) {
                     tex_coords[1],
                     tex_coords[0]
                 );
-                //shade = std::max(0, (255 - static_cast<int>(z/130*255)));
-                color = make_tup<uint8_t, 3>({ (uint8_t)cvcolor[0], (uint8_t)cvcolor[1], (uint8_t)cvcolor[2] });
+                //shade = std::max(0, (255 - static_cast<uint8_t>(z/130*255)));
+                shade = static_cast<int>(z/130*255);
+                color = make_tup<uint8_t, 3>({
+                    (uint8_t)clamp((int)(cvcolor[0] - shade), 0, 255),
+                    (uint8_t)clamp((int)(cvcolor[1] - shade), 0, 255),
+                    (uint8_t)clamp((int)(cvcolor[2] - shade), 0, 255)
+                });
                 //std::cout << color << "\n";
                 camera->depth_buffer[x][y] = z;
                 render_mut.lock();

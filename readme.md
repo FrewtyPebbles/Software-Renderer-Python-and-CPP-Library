@@ -6,6 +6,10 @@ Here are some rendering tests using this library and PIL as a render medium:
 
 First successful texture map:
 
+![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/tests/distance_shaded_texture_mapped.gif)
+
+First successful texture map:
+
 ![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/tests/texture_mapping_success.gif)
 
 First render after porting over position/rotation:
