@@ -17,14 +17,17 @@ float polygon::bary_get_z(int x, int y, PROJECTIONS proj) {
     return fmaf(A.z, b_coords[0], fmaf(B.z, b_coords[1], C.z*b_coords[2]));
 }
 
-tup<int, 2> polygon::get_texture_coordinates(int x, int y, PROJECTIONS proj) {
-    tup<float, 3> b_coords = barycentric_coords(proj[0][0], proj[0][1], proj[1][0], proj[1][1], proj[2][0], proj[2][1], x, y);
-    return make_tup<int, 2>({
-        static_cast<int>(fmaf(A_tex.x, b_coords[0], fmaf(B_tex.x, b_coords[1], C_tex.x*b_coords[2]))),
-        static_cast<int>(fmaf(A_tex.y, b_coords[0], fmaf(B_tex.y, b_coords[1], C_tex.y*b_coords[2])))
-    });
-}
+tup<int, 2> polygon::get_texture_coordinates(int x, int y, PROJECTIONS proj, int width, int height) {
+    tup<float, 3> b_coords_vec = barycentric_coords(proj[0][0], proj[0][1], proj[1][0], proj[1][1], proj[2][0], proj[2][1], x, y);
 
+    auto tupl = make_tup<int, 2>({
+        static_cast<int>(fmaf(A_tex.x*width, b_coords_vec[0], fmaf(B_tex.x*width, b_coords_vec[1], C_tex.x*width*b_coords_vec[2]))),
+        static_cast<int>(fmaf(A_tex.y*height, b_coords_vec[0], fmaf(B_tex.y*height, b_coords_vec[1], C_tex.y*height*b_coords_vec[2])))
+    });
+    //std::cout << B_tex << std::endl;
+    return tupl;
+}
+ 
 void polygon::render(camera* camera, screen* screen) {
     // TODO: change color to texturemap color.
     uint8_t shade;
@@ -34,16 +37,21 @@ void polygon::render(camera* camera, screen* screen) {
     PROJECTIONS projections = this->project(camera, screen);
     tup<int, 2> vert_bounds = this->get_vertical_bounds(projections, camera, screen);
     float z;
-    
+    auto texture = this->mesh_data->materials[0].diffuse_texture;
     for (int y = vert_bounds[0]; y < vert_bounds[1]; y++) {
         hor_bounds = this->get_render_row_range(y, projections, camera, screen);
         for (int x = hor_bounds[0]; x < hor_bounds[1]; x++) {
             z = this->bary_get_z(x, y, projections);
             if (camera->depth_buffer[x][y] > z) {
-                tex_coords = this->get_texture_coordinates(x,y,projections);
-                auto cvcolor = this->mesh_data->materials[0].diffuse_texture.at<cv::Vec3b>(tex_coords[1],tex_coords[0]);
+                tex_coords = this->get_texture_coordinates(x,y,projections, texture.cols, texture.rows);
+                
+                auto cvcolor = texture.at<cv::Vec3b>(
+                    tex_coords[1],
+                    tex_coords[0]
+                );
                 //shade = std::max(0, (255 - static_cast<int>(z/130*255)));
-                color = make_tup<uint8_t, 3>({ cvcolor[0], cvcolor[1], cvcolor[2] });
+                color = make_tup<uint8_t, 3>({ (uint8_t)cvcolor[0], (uint8_t)cvcolor[1], (uint8_t)cvcolor[2] });
+                //std::cout << color << "\n";
                 camera->depth_buffer[x][y] = z;
                 render_mut.lock();
                 camera->frame_buffer.push_back(pixel(x, y, color));

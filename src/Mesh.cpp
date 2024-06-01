@@ -6,8 +6,7 @@
 #include <iostream>
 #include "debug.h"
 
- 
-mesh::mesh(vector<vec3> vertexes, vector<face> faces) : vertexes(vertexes), faces(faces) {}
+
  
 vector<polygon> mesh::get_polygons(vector<vec3> vertexes) {
     
@@ -18,15 +17,14 @@ vector<polygon> mesh::get_polygons(vector<vec3> vertexes) {
         auto vt_inds = fce.vertex_tex_coord_indices;
         auto vn_inds = fce.normal_indicies;
 
-
         polygons.push_back(
             polygon(
                 vertexes[v_inds[0]],
                 vertexes[v_inds[1]],
                 vertexes[v_inds[2]],
-                vn_inds[0] != -1 ? this->texture_vertexes[vn_inds[0]] : vec3(),
-                vn_inds[1] != -1 ? this->texture_vertexes[vn_inds[1]] : vec3(),
-                vn_inds[2] != -1 ? this->texture_vertexes[vn_inds[2]] : vec3(),
+                vt_inds[0] != -1 ? this->uv_vertexes[vt_inds[0]] : vec3(),
+                vt_inds[1] != -1 ? this->uv_vertexes[vt_inds[1]] : vec3(),
+                vt_inds[2] != -1 ? this->uv_vertexes[vt_inds[2]] : vec3(),
                 vn_inds[0] != -1 ? this->vertex_normals[vn_inds[0]] : vec3(),
                 vn_inds[1] != -1 ? this->vertex_normals[vn_inds[1]] : vec3(),
                 vn_inds[2] != -1 ? this->vertex_normals[vn_inds[2]] : vec3(),
@@ -39,7 +37,7 @@ vector<polygon> mesh::get_polygons(vector<vec3> vertexes) {
 
 mesh mesh::from_obj(string file_path) {
     vector<vec3> verticies;
-    vector<vec3> tex_verticies;
+    vector<vec3> uv_vertexes;
     vector<vec3> vertex_normals;
     vector<face> faces;
     vector<string> tokens;
@@ -60,6 +58,30 @@ mesh mesh::from_obj(string file_path) {
             y = tokens[2];
             z = tokens[3];
             verticies.push_back(
+                vec3(
+                    std::stof(x),
+                    std::stof(y),
+                    std::stof(z)
+                )
+            );
+        }
+        else if (prefix == "vt") {
+            x = tokens[1];
+            y = tokens[2];
+            z = tokens[3];
+            uv_vertexes.push_back(
+                vec3(
+                    std::stof(x),
+                    std::stof(y),
+                    std::stof(z)
+                )
+            );
+        }
+        else if (prefix == "vn") {
+            x = tokens[1];
+            y = tokens[2];
+            z = tokens[3];
+            vertex_normals.push_back(
                 vec3(
                     std::stof(x),
                     std::stof(y),
@@ -119,30 +141,6 @@ mesh mesh::from_obj(string file_path) {
                 })
             ));
         }
-        else if (prefix == "vt") {
-            x = tokens[1];
-            y = tokens[2];
-            z = tokens[3];
-            tex_verticies.push_back(
-                vec3(
-                    std::stof(x),
-                    std::stof(y),
-                    std::stof(z)
-                )
-            );
-        }
-        else if (prefix == "vn") {
-            x = tokens[1];
-            y = tokens[2];
-            z = tokens[3];
-            vertex_normals.push_back(
-                vec3(
-                    std::stof(x),
-                    std::stof(y),
-                    std::stof(z)
-                )
-            );
-        }
         else if (prefix == "g") {
 
         }
@@ -151,12 +149,18 @@ mesh mesh::from_obj(string file_path) {
         }
         else if (prefix == "mtllib") {
             string fpath = file_path.substr(0, file_path.find_last_of("\\/"));
-            fpath += tokens[1];
+            fpath += "/"+tokens[1];
+            std::cout << fpath << "\n";
             materials = mesh::get_material(fpath);
         }
     }
-    mesh ret = mesh(verticies, faces);
-    ret.materials = materials;
+    mesh ret = mesh(
+        verticies,
+        faces,
+        uv_vertexes,
+        vertex_normals,
+        materials
+    );
     return ret;
 }
 
@@ -179,7 +183,7 @@ vector<tup<int, 3>> mesh::parse_face(vector<string> tokens) {
     }
     else if (tokens[0].find("/") != string::npos) {
         if (std::count(tokens[0].begin(), tokens[0].end(), '/') == 1){
-            // Face with texture coords
+            // Face with texture coords coord/coord
             for (string token : tokens) {
                 vertex = token.substr(0, token.find("/"));
                 text_coord = token.substr(token.find("/") + 1);
@@ -315,10 +319,10 @@ vector<material> mesh::get_material(string file_path) {
                 break;
 
             case 'm':
-                switch (*(prefix.end()-1))
+                switch (*(prefix.end()-2))
                 {
                     case 'K':
-                        switch (prefix.back())
+                        switch (*(prefix.end()-1))
                         {
                             case 'a':
                                 ret_mats.back().ambient_tex_file = tokens[1];
@@ -327,7 +331,8 @@ vector<material> mesh::get_material(string file_path) {
                             case 'd':
                                 ret_mats.back().diffuse_tex_file = tokens[1];
                                 fpath = file_path.substr(0, file_path.find_last_of("\\/"));
-                                fpath += tokens[1];
+                                fpath += "/"+tokens[1];
+                                std::cout << fpath << "\n";
                                 ret_mats.back().diffuse_texture = cv::imread(fpath);
                                 break;
                             
@@ -371,3 +376,4 @@ vector<material> mesh::get_material(string file_path) {
     }
     return ret_mats;
 }
+

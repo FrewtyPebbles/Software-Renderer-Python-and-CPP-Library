@@ -24,7 +24,7 @@ public:
     friend inline std::ostream& operator<<(std::ostream& os, const tup<T, N>& self){
         os << '(';
         for (int i = 0; i < N; i++)
-            os << self.data[i] << ',';
+            os << (T)self.data[i] << ',';
         os << ')';
         return os;
     }

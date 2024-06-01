@@ -31,7 +31,7 @@ cdef class Mesh:
         ret.c_class.faces = cppinst.faces
         ret.c_class.vertexes = cppinst.vertexes
         ret.c_class.vertex_normals = cppinst.vertex_normals
-        ret.c_class.texture_vertexes = cppinst.texture_vertexes
+        ret.c_class.uv_vertexes = cppinst.uv_vertexes
         return ret
 
     @staticmethod

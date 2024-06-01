@@ -13,17 +13,13 @@ PY_PATH = path.join(path.dirname(__file__), "renderer/")
 C_PATH = path.join(path.dirname(__file__), "src/")
 
 INCLUDE_DIRS = [
-    getenv("STATIC_OPENCV_INCLUDE_DIR")
+    getenv("INCLUDE_DIR")
 ]
 LIBRARY_DIRS = [
-    getenv("STATIC_OPENCV_LIB_DIR")
+    getenv("STATIC_LIB_DIR")
 ]
-LIBRARIES = [f.replace(".lib", "") for f in listdir(getenv("STATIC_OPENCV_LIB_DIR")) if f.endswith(".lib")]
 
-# LIBRARIES = [
-#     "opencv_core4", "opencv_imgcodecs4", "opencv_imgproc4"
-# ]
-
+LIBRARIES = [f.replace(".lib", "") for f in listdir(getenv("STATIC_LIB_DIR")) if f.endswith(".lib")]
 
 c_deps = [path.join(C_PATH, cppf) for cppf in listdir(C_PATH) if cppf.endswith(".cpp")]
 pyx_deps = [path.join(PY_PATH, cppf) for cppf in listdir(PY_PATH) if cppf.endswith(".pyx")]

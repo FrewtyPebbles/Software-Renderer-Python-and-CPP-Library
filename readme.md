@@ -4,6 +4,10 @@ This is a 3d rendering library for python written in c++.  It is a re-write of a
 
 Here are some rendering tests using this library and PIL as a render medium:
 
+First successful texture map:
+
+![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/texture_mapping_success.gif)
+
 First render after porting over position/rotation:
 
 ![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/tests%2Frotating%20teapot.gif)

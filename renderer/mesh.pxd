@@ -34,7 +34,7 @@ cdef extern from "../src/Mesh.h":
 
     cdef cppclass mesh:
         mesh() except +
-        mesh(vector[vec3] vertexes, vector[tup3i] polygon_inds) except +
+        mesh(vector[vec3] vertexes, vector[tup3i] faces, vector[vec3] uv_vertexes, vector[vec3] vertex_normals, vector[vec3] materials) except +
         mesh(mesh& rhs) except +
         vector[polygon] get_polygons(vector[vec3] vertexes)
 
@@ -42,7 +42,7 @@ cdef extern from "../src/Mesh.h":
         mesh from_obj(string file_path)
 
         vector[vec3] vertexes
-        vector[vec3] texture_vertexes
+        vector[vec3] uv_vertexes
         vector[vec3] vertex_normals
         vector[face] faces
         vector[material] materials

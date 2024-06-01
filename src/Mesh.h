@@ -44,17 +44,29 @@ class mesh {
 public: 
     mesh() {} 
  
-    mesh(vector<vec3> vertexes, vector<face> faces);
-    mesh(const mesh& rhs) : vertexes(rhs.vertexes), faces(rhs.faces) {}
+    mesh(vector<vec3> vertexes, vector<face> faces, vector<vec3> uv_vertexes, vector<vec3> vertex_normals, vector<material> materials):
+    vertexes(vertexes), 
+    faces(faces), 
+    uv_vertexes(uv_vertexes), 
+    vertex_normals(vertex_normals),
+    materials(materials)
+    {}
+    mesh(const mesh& rhs): 
+    vertexes(rhs.vertexes), 
+    faces(rhs.faces), 
+    uv_vertexes(rhs.uv_vertexes), 
+    vertex_normals(rhs.vertex_normals),
+    materials(rhs.materials)
+    {}
 
     vector<polygon> get_polygons(vector<vec3> vertexes);
 
     static mesh from_obj(string file_path);
 
     vector<vec3> vertexes;
-    vector<vec3> texture_vertexes;
-    vector<vec3> vertex_normals;
     vector<face> faces;
+    vector<vec3> uv_vertexes;
+    vector<vec3> vertex_normals;
     vector<material> materials;
 
 private:

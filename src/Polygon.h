@@ -59,7 +59,7 @@ public:
     tup<int, 2> get_render_row_range(int y, PROJECTIONS projections, camera* camera, screen* screen);
     tup<tup<float, 2>, 3> project(camera* camera, screen* screen);
     float bary_get_z(int x, int y, PROJECTIONS proj);
-    tup<int, 2> get_texture_coordinates(int x, int y, PROJECTIONS proj);
+    tup<int, 2> get_texture_coordinates(int x, int y, PROJECTIONS proj, int width, int height);
     friend std::ostream& operator<<(std::ostream& os, const polygon& self);
 };
  
