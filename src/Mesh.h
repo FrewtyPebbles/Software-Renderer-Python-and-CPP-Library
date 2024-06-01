@@ -8,7 +8,7 @@
 using std::vector;
 using std::string;
 
-enum class illum_model {
+enum illum_model {
     CONSTANT_COLOR,
     DIFFUSE,
     DIFFUSE_AND_SPECULAR
@@ -39,11 +39,11 @@ struct face {
     {}
     tup<int, 3> vertex_indicies, vertex_tex_coord_indices, normal_indicies;
 };
-
+ 
 class mesh {
-public:
-    mesh() {}
-
+public: 
+    mesh() {} 
+ 
     mesh(vector<vec3> vertexes, vector<face> faces);
     mesh(const mesh& rhs) : vertexes(rhs.vertexes), faces(rhs.faces) {}
 
@@ -72,8 +72,8 @@ inline string trim(const string& str)
     }
     size_t last = str.find_last_not_of(' ');
     return str.substr(first, (last - first + 1));
-}
-
+} 
+  
 inline std::vector<std::string> split(std::string const &input) { 
     std::istringstream buffer(input);
     std::vector<std::string> ret((std::istream_iterator<std::string>(buffer)), 

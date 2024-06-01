@@ -1,10 +1,10 @@
 # distutils: language = c++
-from mesh cimport mesh, Mesh
-from vec3 cimport vec3, Vec3
-from camera cimport camera, screen, Camera, Screen
+from renderer.mesh cimport mesh, Mesh
+from renderer.vec3 cimport vec3, Vec3
+from renderer.camera cimport camera, screen, Camera, Screen
 from libcpp.vector cimport vector
 
-cdef extern from "src/Object.h":
+cdef extern from "../src/Object.h":
     cdef cppclass object3d:
         # alias for cpp class object since name object is reserved by python
         object3d() except +

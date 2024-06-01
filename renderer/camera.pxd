@@ -1,17 +1,17 @@
 # distutils: language = c++
-from vec3 cimport vec3
+from renderer.vec3 cimport vec3
 from libcpp.vector cimport vector
-from tup cimport tup3ui8
+from renderer.tup cimport tup3ui8
 from libcpp.unordered_set cimport unordered_set
-
-cdef extern from "src/Camera.h":
+  
+cdef extern from "../src/Camera.h":
     cdef cppclass pixel:
         pixel() except +
         pixel(int x, int y, tup3ui8 color) except +
         int x
         int y
-        tup3ui8 color
-    
+        tup3ui8 color 
+     
     cdef cppclass pixelHash:
         pixelHash() except +
 

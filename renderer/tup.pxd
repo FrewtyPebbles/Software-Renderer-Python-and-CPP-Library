@@ -2,7 +2,7 @@
 
 ctypedef unsigned char uint8
 
-cdef extern from "src/Tup.h":
+cdef extern from "../src/Tup.h":
     cdef cppclass tup2f:
         tup2f() except +
         tup2f(float[2] values) except +

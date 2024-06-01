@@ -1,2 +1,3 @@
 INC_DIR = opencv/include/path
 LIB_DIR = opencv/lib/path
+BIN_DIR = opencv/bin/path

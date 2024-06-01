@@ -6,3 +6,6 @@
 test.png
 !/src/*
 .env
+*.dll
+*.pdb
+__pycache__/

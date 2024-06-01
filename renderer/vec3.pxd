@@ -1,8 +1,8 @@
 # distutils: language = c++
-from camera cimport camera, screen, Camera, Screen
-from tup cimport tup2f, tup3f, tup3tup2f
+from renderer.camera cimport camera, screen, Camera, Screen
+from renderer.tup cimport tup2f, tup3f, tup3tup2f
 
-cdef extern from "src/Vec3.h":
+cdef extern from "../src/Vec3.h":
     cdef cppclass vec3:
         vec3() except +
         vec3(float x, float y, float z) except +

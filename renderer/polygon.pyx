@@ -1,7 +1,6 @@
 # distutils: language = c++
-
-from vec3 cimport Vec3
-from camera cimport Camera
+from renderer.vec3 cimport Vec3
+from renderer.camera cimport Camera
 
 
 cdef tup3tup2f conv_proj_tuples(PROJECTIONS projections):

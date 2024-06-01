@@ -10,7 +10,8 @@
 #include "threadpool.h"
 #include "util.h"
 #include "Mesh.h"
-
+#include <opencv2/opencv.hpp>
+ 
 float polygon::bary_get_z(int x, int y, PROJECTIONS proj) {
     tup<float, 3> b_coords = barycentric_coords(proj[0][0], proj[0][1], proj[1][0], proj[1][1], proj[2][0], proj[2][1], x, y);
     return fmaf(A.z, b_coords[0], fmaf(B.z, b_coords[1], C.z*b_coords[2]));
@@ -40,7 +41,7 @@ void polygon::render(camera* camera, screen* screen) {
             z = this->bary_get_z(x, y, projections);
             if (camera->depth_buffer[x][y] > z) {
                 tex_coords = this->get_texture_coordinates(x,y,projections);
-                auto cvcolor = this->mesh->materials[0].diffuse_texture.at<cv::Vec3b>(tex_coords[1],tex_coords[0]);
+                auto cvcolor = this->mesh_data->materials[0].diffuse_texture.at<cv::Vec3b>(tex_coords[1],tex_coords[0]);
                 //shade = std::max(0, (255 - static_cast<int>(z/130*255)));
                 color = make_tup<uint8_t, 3>({ cvcolor[0], cvcolor[1], cvcolor[2] });
                 camera->depth_buffer[x][y] = z;

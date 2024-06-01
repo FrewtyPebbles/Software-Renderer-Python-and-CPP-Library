@@ -1,6 +1,6 @@
 # distutils: language = c++
-from vec3 cimport Vec3, vec3
-from tup cimport tup3ui8
+from renderer.vec3 cimport Vec3, vec3
+from renderer.tup cimport tup3ui8
 from cython.operator cimport dereference
 
 cdef class Screen:

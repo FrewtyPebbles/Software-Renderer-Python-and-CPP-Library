@@ -1,6 +1,11 @@
 import time
 from PIL import Image, ImageDraw
-from renderer import Vec3, Camera, Screen, Polygon, Mesh, Object, rasterize
+from renderer.vec3 import Vec3
+from renderer.camera import Camera, Screen
+from renderer.polygon import Polygon
+from renderer.mesh import Mesh
+from renderer.object import Object
+from renderer.rasterize import render
 
 # TODO: trace your steps carefully through the render pipeline and figure out what is breaking.
 
@@ -27,7 +32,7 @@ teapot.rotation += 0.1
 teapot.render(cam, screen)
 cppt2 = time.time()
 print(f"cpp time to render: {(cppt2-cppt1) * 1000:0.4f} ms")
-rasterize(img_draw, cam)
+render(img_draw, cam)
 t2 = time.time()
 print(f"time to render: {(t2-t1) * 1000:0.4f} ms")
 frames.append(img.copy())
@@ -40,7 +45,7 @@ for i in range(60):
     teapot.render(cam, screen)
     cppt2 = time.time()
     print(f"cpp time to render: {(cppt2-cppt1) * 1000:0.4f} ms")
-    rasterize(img_draw, cam)
+    render(img_draw, cam)
     t2 = time.time()
     print(f"time to render: {(t2-t1) * 1000:0.4f} ms")
     frames.append(img.copy())
@@ -52,7 +57,7 @@ teapot.rotation += 0.1
 teapot.render(cam, screen)
 cppt2 = time.time()
 print(f"cpp time to render: {(cppt2-cppt1) * 1000:0.4f} ms")
-rasterize(img_draw, cam)
+render(img_draw, cam)
 t2 = time.time()
 print(f"time to render: {(t2-t1) * 1000:0.4f} ms")
 frames.append(img.copy())

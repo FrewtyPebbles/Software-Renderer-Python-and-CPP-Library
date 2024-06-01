@@ -1,9 +1,9 @@
 # distutils: language = c++
-from mesh cimport Mesh
-from vec3 cimport Vec3, vec3
-from camera cimport Camera, Screen
+from renderer.mesh cimport Mesh
+from renderer.vec3 cimport Vec3, vec3
+from renderer.camera cimport Camera, Screen
 
-cimport vec3 as v3
+cimport renderer.vec3 as v3
 
 cdef class V3Property:
 

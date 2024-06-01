@@ -1,12 +1,11 @@
 # distutils: language = c++
-
-from camera cimport Camera, pixel
-from tup cimport tup3ui8, uint8
+from renderer.camera cimport pixel
+from renderer.tup cimport tup3ui8, uint8
 from cython.operator cimport dereference
 from libcpp.vector cimport vector
 from cython.parallel cimport prange
 
-cpdef void rasterize(object img_draw, Camera cam):
+cpdef void render(object img_draw, Camera cam):
     cdef:
         pixel pxl
         uint8* color

@@ -31,7 +31,7 @@ public:
       vec3 A_norm,
       vec3 B_norm,
       vec3 C_norm,
-      mesh* mesh
+      mesh* mesh_data
     ) :
       A(A),
       B(B),
@@ -42,7 +42,7 @@ public:
       A_norm(A_norm),
       B_norm(B_norm),
       C_norm(C_norm),
-      mesh(mesh)
+      mesh_data(mesh_data)
     {};
     vec3 A;
     vec3 B;
@@ -53,7 +53,7 @@ public:
     vec3 A_norm;
     vec3 B_norm;
     vec3 C_norm;
-    mesh* mesh;
+    mesh* mesh_data;
     void render(camera* camera, screen* screen);
     tup<int, 2> get_vertical_bounds(PROJECTIONS projections, camera* camera, screen* screen);
     tup<int, 2> get_render_row_range(int y, PROJECTIONS projections, camera* camera, screen* screen);

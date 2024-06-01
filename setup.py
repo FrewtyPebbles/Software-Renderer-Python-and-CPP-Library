@@ -1,33 +1,47 @@
 from os import getenv, listdir, path
-from setuptools import Extension, setup
+from setuptools import setup
+from distutils.extension import Extension
 from Cython.Build import cythonize
 from dotenv import load_dotenv
 
 load_dotenv()
 
-PY_PATH = path.dirname(__file__)
+MODULE_NAME = "renderer"
+
+PY_PATH = path.join(path.dirname(__file__), "renderer/")
 
 C_PATH = path.join(path.dirname(__file__), "src/")
 
 INCLUDE_DIRS = [
-    getenv("INC_DIR")
+    getenv("STATIC_OPENCV_INCLUDE_DIR")
 ]
 LIBRARY_DIRS = [
-    getenv("LIB_DIR")
+    getenv("STATIC_OPENCV_LIB_DIR")
 ]
-LIBRARIES = [
-    'opencv_core4', 'opencv_highgui4', "opencv_imgcodecs4", "opencv_imgproc4"
-]
+LIBRARIES = [f.replace(".lib", "") for f in listdir(getenv("STATIC_OPENCV_LIB_DIR")) if f.endswith(".lib")]
+
+# LIBRARIES = [
+#     "opencv_core4", "opencv_imgcodecs4", "opencv_imgproc4"
+# ]
+
+
+c_deps = [path.join(C_PATH, cppf) for cppf in listdir(C_PATH) if cppf.endswith(".cpp")]
+pyx_deps = [path.join(PY_PATH, cppf) for cppf in listdir(PY_PATH) if cppf.endswith(".pyx")]
+print()
 EXTENSIONS = [
-    Extension('renderer', [
-        *[path.join(PY_PATH, pyxf) for pyxf in listdir(PY_PATH) if pyxf.endswith(".pyx")],
-        *[path.join(C_PATH, cppf) for cppf in listdir(C_PATH) if cppf.endswith(".cpp")]
-    ],
-    include_dirs=INCLUDE_DIRS, library_dirs=LIBRARY_DIRS, libraries=LIBRARIES)
+    Extension(path.relpath(pyx_dep, path.dirname(__file__)).replace(".pyx", "").replace("\\", ".").replace("/", "."),
+              sources=[pyx_dep, *c_deps],
+              language="c++",
+              include_dirs=INCLUDE_DIRS,
+              libraries=LIBRARIES,
+              library_dirs=LIBRARY_DIRS,
+              extra_compile_args=["/MT", "/O3"],
+              )
+    for pyx_dep in pyx_deps
 ]
 
 setup(
-    name='renderer',
+    name=MODULE_NAME,
     ext_modules = cythonize(EXTENSIONS,
         compiler_directives={
             "language_level": 3,

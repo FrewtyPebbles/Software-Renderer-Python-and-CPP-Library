@@ -1,6 +1,6 @@
 # distutils: language = c++
-from vec3 cimport Vec3
-from polygon cimport Polygon
+from renderer.vec3 cimport Vec3
+from renderer.polygon cimport Polygon
 from libcpp.vector cimport vector
 
 

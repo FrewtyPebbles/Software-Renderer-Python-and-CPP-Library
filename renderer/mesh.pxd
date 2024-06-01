@@ -1,16 +1,20 @@
 # distutils: language = c++
-from tup cimport tup3i, tup3f
+from renderer.tup cimport tup3i, tup3f
 from libcpp.vector cimport vector
-from vec3 cimport vec3, Vec3
-from polygon cimport polygon, Polygon
+from renderer.vec3 cimport vec3, Vec3
+from renderer.polygon cimport polygon, Polygon
 from libcpp.string cimport string
 
-cdef extern from "opencv2/opencv.hpp" namespace "cv":
+cdef extern from "opencv2/core.hpp" namespace "cv":
     cdef cppclass Mat:
-        pass
+        Mat() except +
+        void create(int, int, int) except +
+        void* data
+        int rows
+        int cols
 
-cdef extern from "src/Mesh.h":
-    cpdef enum class illum_model(int):
+cdef extern from "../src/Mesh.h":
+    cdef enum illum_model:
         CONSTANT_COLOR, 
         DIFFUSE,
         DIFFUSE_AND_SPECULAR
@@ -31,6 +35,7 @@ cdef extern from "src/Mesh.h":
     cdef cppclass mesh:
         mesh() except +
         mesh(vector[vec3] vertexes, vector[tup3i] polygon_inds) except +
+        mesh(mesh& rhs) except +
         vector[polygon] get_polygons(vector[vec3] vertexes)
 
         @staticmethod
