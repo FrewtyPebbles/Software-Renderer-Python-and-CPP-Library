@@ -98,3 +98,14 @@ float xp, float yp) {
     float u3 = 1 - u1 - u2;
     return make_tup<float, 3>({u1, u2, u3});
 }
+
+template <typename T>
+inline void vec_extend(vector<T>& v, vector<T>& v_prime) {
+  v.reserve(v.size() + distance(v_prime.begin(),v_prime.end()));
+  v.insert(v.end(),v_prime.begin(),v_prime.end());
+}
+
+template <typename T>
+inline T clamp(const T& value, const T& low, const T& high) {
+  return value < low ? low : (value > high ? high : value); 
+}

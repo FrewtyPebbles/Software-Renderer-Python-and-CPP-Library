@@ -4,6 +4,7 @@ from libcpp.vector cimport vector
 from renderer.vec3 cimport vec3, Vec3
 from renderer.polygon cimport polygon, Polygon
 from libcpp.string cimport string
+from libcpp.map cimport map
 
 cdef extern from "opencv2/core.hpp" namespace "cv":
     cdef cppclass Mat:
@@ -34,22 +35,32 @@ cdef extern from "../src/Mesh.h":
 
     cdef cppclass mesh:
         mesh() except +
-        mesh(vector[vec3] vertexes, vector[tup3i] faces, vector[vec3] uv_vertexes, vector[vec3] vertex_normals, vector[vec3] materials) except +
-        mesh(mesh& rhs) except +
+        mesh(map[string, meshgroup]* groups, map[string, material*] materials, vector[vec3]* vertexes, vector[vec3]* uv_vertexes, vector[vec3]* vertex_normals) except +
+        @staticmethod
+        mesh* from_obj(string file_path)
+        map[string, meshgroup]* groups
+        map[string, material*] materials
+        vector[vec3]* vertexes
+        vector[vec3]* uv_vertexes
+        vector[vec3]* vertex_normals
+
+    cdef cppclass meshgroup:
+        meshgroup() except +
+        meshgroup(vector[vec3]* vertexes, vector[vec3]* uv_vertexes, vector[vec3]* vertex_normals) except +
+        meshgroup(meshgroup& rhs) except +
         vector[polygon] get_polygons(vector[vec3] vertexes)
 
-        @staticmethod
-        mesh from_obj(string file_path)
 
-        vector[vec3] vertexes
-        vector[vec3] uv_vertexes
-        vector[vec3] vertex_normals
+        vector[vec3]* vertexes
         vector[face] faces
-        vector[material] materials
+        vector[vec3]* uv_vertexes
+        vector[vec3]* vertex_normals
+        material* materials
 
 cdef class Mesh:
     cdef mesh* c_class
-    @staticmethod
-    cdef Mesh from_cpp(mesh cppinst)
 
+    @staticmethod
+    cdef Mesh from_cpp(mesh* cppinst)
+    
 cpdef Mesh _from_obj(str file_path)

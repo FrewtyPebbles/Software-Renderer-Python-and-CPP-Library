@@ -8,7 +8,7 @@
 
 
  
-vector<polygon> mesh::get_polygons(vector<vec3> vertexes) {
+vector<polygon> meshgroup::get_polygons(vector<vec3> vertexes) {
     
     vector<polygon> polygons;
     auto faces = this->faces;
@@ -16,18 +16,19 @@ vector<polygon> mesh::get_polygons(vector<vec3> vertexes) {
         auto v_inds = fce.vertex_indicies;
         auto vt_inds = fce.vertex_tex_coord_indices;
         auto vn_inds = fce.normal_indicies;
+        // std::cout << fce << std::endl;
 
         polygons.push_back(
             polygon(
                 vertexes[v_inds[0]],
                 vertexes[v_inds[1]],
                 vertexes[v_inds[2]],
-                vt_inds[0] != -1 ? this->uv_vertexes[vt_inds[0]] : vec3(),
-                vt_inds[1] != -1 ? this->uv_vertexes[vt_inds[1]] : vec3(),
-                vt_inds[2] != -1 ? this->uv_vertexes[vt_inds[2]] : vec3(),
-                vn_inds[0] != -1 ? this->vertex_normals[vn_inds[0]] : vec3(),
-                vn_inds[1] != -1 ? this->vertex_normals[vn_inds[1]] : vec3(),
-                vn_inds[2] != -1 ? this->vertex_normals[vn_inds[2]] : vec3(),
+                vt_inds[0] != -1 ? (*this->uv_vertexes)[vt_inds[0]] : vec3(),
+                vt_inds[1] != -1 ? (*this->uv_vertexes)[vt_inds[1]] : vec3(),
+                vt_inds[2] != -1 ? (*this->uv_vertexes)[vt_inds[2]] : vec3(),
+                vn_inds[0] != -1 ? (*this->vertex_normals)[vn_inds[0]] : vec3(),
+                vn_inds[1] != -1 ? (*this->vertex_normals)[vn_inds[1]] : vec3(),
+                vn_inds[2] != -1 ? (*this->vertex_normals)[vn_inds[2]] : vec3(),
                 this
             ));
     }
@@ -35,16 +36,19 @@ vector<polygon> mesh::get_polygons(vector<vec3> vertexes) {
     return polygons;
 }
 
-mesh mesh::from_obj(string file_path) {
-    vector<vec3> verticies;
-    vector<vec3> uv_vertexes;
-    vector<vec3> vertex_normals;
-    vector<face> faces;
+mesh* mesh::from_obj(string file_path) {
+    // RETURNS HEAP ALLOCATED POINTER
+    
+    map<std::string, meshgroup>* groups = new map<std::string, meshgroup>;
     vector<string> tokens;
     string x, y, z, line, prefix;
     vector<tup<int, 3>> face_data, poly_buffer;
-    vector<material> materials;
-
+    map<std::string, material*> materials;
+    string current_group = "default";
+    vector<vec3>* vertexes = new vector<vec3>;
+    vector<vec3>* uv_vertexes = new vector<vec3>;
+    vector<vec3>* vertex_normals = new vector<vec3>;
+    (*groups)[current_group] = meshgroup(vertexes, uv_vertexes, vertex_normals);
     std::ifstream file(file_path);
     while (std::getline(file, line)) {
         tokens = split(trim(line));
@@ -57,7 +61,7 @@ mesh mesh::from_obj(string file_path) {
             x = tokens[1];
             y = tokens[2];
             z = tokens[3];
-            verticies.push_back(
+            vertexes->push_back(
                 vec3(
                     std::stof(x),
                     std::stof(y),
@@ -68,8 +72,8 @@ mesh mesh::from_obj(string file_path) {
         else if (prefix == "vt") {
             x = tokens[1];
             y = tokens[2];
-            z = tokens[3];
-            uv_vertexes.push_back(
+            z = tokens.size() == 4 ? tokens[3] : "0";// 4 cuz the prefix
+            uv_vertexes->push_back(
                 vec3(
                     std::stof(x),
                     std::stof(y),
@@ -81,7 +85,7 @@ mesh mesh::from_obj(string file_path) {
             x = tokens[1];
             y = tokens[2];
             z = tokens[3];
-            vertex_normals.push_back(
+            vertex_normals->push_back(
                 vec3(
                     std::stof(x),
                     std::stof(y),
@@ -100,7 +104,7 @@ mesh mesh::from_obj(string file_path) {
                 if (poly_buffer.size() == 2) {
                     poly_buffer.push_back(face_data[last_ind]);
                     // push back the correct faces
-                    faces.push_back(face(
+                    (*groups)[current_group].faces.push_back(face(
                         make_tup<int, 3>({
                             poly_buffer[0][0],
                             poly_buffer[1][0],
@@ -123,7 +127,7 @@ mesh mesh::from_obj(string file_path) {
                 poly_buffer.push_back(face_data[i]);
             }
             poly_buffer.push_back(face_data[last_ind]);
-            faces.push_back(face(
+            (*groups)[current_group].faces.push_back(face(
                 make_tup<int, 3>({
                     poly_buffer[0][0],
                     poly_buffer[1][0],
@@ -142,26 +146,29 @@ mesh mesh::from_obj(string file_path) {
             ));
         }
         else if (prefix == "g") {
-
+            current_group = tokens[1];
+            if (!groups->count(current_group))
+                (*groups)[current_group] = meshgroup(vertexes, uv_vertexes, vertex_normals);
+            (*groups)[current_group].material_data = materials.end()->second;
         }
         else if (prefix == "usemtl") {
-
+            (*groups)[current_group].material_data = materials[tokens[1]];
         }
         else if (prefix == "mtllib") {
             string fpath = file_path.substr(0, file_path.find_last_of("\\/"));
             fpath += "/"+tokens[1];
-            std::cout << fpath << "\n";
-            materials = mesh::get_material(fpath);
+            materials = mesh::get_materials(fpath);
+            (*groups)["default"].material_data = materials.begin()->second;
         }
     }
-    mesh ret = mesh(
-        verticies,
-        faces,
+    //std::cout << "thing -> " << (*groups)["default"].material_data->name << " is the first material\n";
+    return new mesh(
+        groups,
+        materials,
+        vertexes,
         uv_vertexes,
-        vertex_normals,
-        materials
+        vertex_normals
     );
-    return ret;
 }
 
 vector<tup<int, 3>> mesh::parse_face(vector<string> tokens) {
@@ -224,11 +231,13 @@ vector<tup<int, 3>> mesh::parse_face(vector<string> tokens) {
     return polygon;
 }
 
-vector<material> mesh::get_material(string file_path) {
+map<std::string, material*> mesh::get_materials(string file_path) {
+    // RETURNS A HEAP ALLOCATED POINTER
     string r, g, b, line, prefix, fpath;
     vector<string> tokens;
     std::ifstream file(file_path);
-    vector<material> ret_mats;
+    map<std::string, material*> ret_mats;
+    string current_mat;
     while (std::getline(file, line)) {
         tokens = split(trim(line));
         if (tokens.size() == 0) {
@@ -236,7 +245,9 @@ vector<material> mesh::get_material(string file_path) {
         }
         prefix = tokens[0];
         if (prefix == "newmtl") {
-            ret_mats.push_back(material());
+            current_mat = tokens[1];
+            ret_mats[current_mat] = new material();
+            ret_mats[current_mat]->name = tokens[1];
         }
         switch (prefix[0])
         {
@@ -249,7 +260,7 @@ vector<material> mesh::get_material(string file_path) {
                         r = tokens[1];
                         g = tokens[2];
                         b = tokens[3];
-                        ret_mats.back().ambient = make_tup<float, 3>({
+                        ret_mats[current_mat]->ambient = make_tup<float, 3>({
                             std::stof(r),
                             std::stof(g),
                             std::stof(b)
@@ -261,7 +272,7 @@ vector<material> mesh::get_material(string file_path) {
                         r = tokens[1];
                         g = tokens[2];
                         b = tokens[3];
-                        ret_mats.back().diffuse = make_tup<float, 3>({
+                        ret_mats[current_mat]->diffuse = make_tup<float, 3>({
                             std::stof(r),
                             std::stof(g),
                             std::stof(b)
@@ -273,7 +284,7 @@ vector<material> mesh::get_material(string file_path) {
                         r = tokens[1];
                         g = tokens[2];
                         b = tokens[3];
-                        ret_mats.back().specular = make_tup<float, 3>({
+                        ret_mats[current_mat]->specular = make_tup<float, 3>({
                             std::stof(r),
                             std::stof(g),
                             std::stof(b)
@@ -285,7 +296,7 @@ vector<material> mesh::get_material(string file_path) {
                         r = tokens[1];
                         g = tokens[2];
                         b = tokens[3];
-                        ret_mats.back().emissive_coeficient = make_tup<float, 3>({
+                        ret_mats[current_mat]->emissive_coeficient = make_tup<float, 3>({
                             std::stof(r),
                             std::stof(g),
                             std::stof(b)
@@ -302,11 +313,11 @@ vector<material> mesh::get_material(string file_path) {
                 switch (prefix[1])
                 {
                     case 'i':
-                        ret_mats.back().optical_density = std::stof(tokens[1]);
+                        ret_mats[current_mat]->optical_density = std::stof(tokens[1]);
                         break;
 
                     case 's':
-                        ret_mats.back().specular_exponent = std::stof(tokens[1]);
+                        ret_mats[current_mat]->specular_exponent = std::stof(tokens[1]);
                         break;
                     
                     default:
@@ -315,7 +326,7 @@ vector<material> mesh::get_material(string file_path) {
                 break;
 
             case 'i':
-                ret_mats.back().illumination_model = static_cast<illum_model>(std::stoi(tokens[1]));
+                ret_mats[current_mat]->illumination_model = static_cast<illum_model>(std::stoi(tokens[1]));
                 break;
 
             case 'm':
@@ -325,15 +336,14 @@ vector<material> mesh::get_material(string file_path) {
                         switch (*(prefix.end()-1))
                         {
                             case 'a':
-                                ret_mats.back().ambient_tex_file = tokens[1];
+                                ret_mats[current_mat]->ambient_tex_file = tokens[1];
                                 break;
  
                             case 'd':
-                                ret_mats.back().diffuse_tex_file = tokens[1];
+                                ret_mats[current_mat]->diffuse_tex_file = tokens[1];
                                 fpath = file_path.substr(0, file_path.find_last_of("\\/"));
                                 fpath += "/"+tokens[1];
-                                std::cout << fpath << "\n";
-                                ret_mats.back().diffuse_texture = cv::imread(fpath);
+                                ret_mats[current_mat]->diffuse_texture = cv::imread(fpath);
                                 break;
                             
                             default:
@@ -345,7 +355,7 @@ vector<material> mesh::get_material(string file_path) {
                         switch (prefix.back())
                         {
                             case 's':
-                                ret_mats.back().specular_highlight_file = tokens[1];
+                                ret_mats[current_mat]->specular_highlight_file = tokens[1];
                                 break;
                             
                             default:
@@ -362,7 +372,7 @@ vector<material> mesh::get_material(string file_path) {
                 switch (prefix[1])
                 {
                 case 'r':
-                    ret_mats.back().transparency = std::stof(tokens[1]);
+                    ret_mats[current_mat]->transparency = std::stof(tokens[1]);
                     break;
                 
                 default:
@@ -374,6 +384,7 @@ vector<material> mesh::get_material(string file_path) {
             break;
         }
     }
+
     return ret_mats;
 }
 

@@ -13,7 +13,7 @@ template<typename T, size_t N>
 class tup;
 class camera;
 class screen;
-class mesh;
+class meshgroup;
 
 typedef tup<tup<float, 2>, 3> PROJECTIONS;
 
@@ -31,7 +31,7 @@ public:
       vec3 A_norm,
       vec3 B_norm,
       vec3 C_norm,
-      mesh* mesh_data
+      meshgroup* mesh_data
     ) :
       A(A),
       B(B),
@@ -53,7 +53,7 @@ public:
     vec3 A_norm;
     vec3 B_norm;
     vec3 C_norm;
-    mesh* mesh_data;
+    meshgroup* mesh_data;
     void render(camera* camera, screen* screen);
     tup<int, 2> get_vertical_bounds(PROJECTIONS projections, camera* camera, screen* screen);
     tup<int, 2> get_render_row_range(int y, PROJECTIONS projections, camera* camera, screen* screen);
@@ -64,13 +64,3 @@ public:
 };
  
 
-template <typename T>
-inline T clamp(const T& value, const T& low, const T& high) {
-  return value < low ? low : (value > high ? high : value); 
-}
-
-template <typename T>
-inline void vec_extend(vector<T>& v, vector<T>& v_prime) {
-  v.reserve(v.size() + distance(v_prime.begin(),v_prime.end()));
-  v.insert(v.end(),v_prime.begin(),v_prime.end());
-}

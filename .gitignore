@@ -9,3 +9,4 @@ test.png
 *.dll
 *.pdb
 __pycache__/
+meshes/

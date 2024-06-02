@@ -20,7 +20,8 @@ img_draw = ImageDraw.Draw(img)
 cam = Camera(Vec3(0.0,0.0,0.0), *dim, 200)
 screen = Screen(500, 500)
 print("load mesh")
-teapot = Object(Mesh.from_obj("meshes/teapot/teapot.obj"), Vec3(0.0,-25.0,120), Vec3(-1,0.5,-0.3))
+teapot = Object(Mesh.from_obj("meshes\pirate_ship\pirate_ship.obj"),
+    Vec3(0.0,-70.0,140), Vec3(0,0,0))
 print("Loaded mesh!")
 
 #create gif
@@ -28,7 +29,7 @@ frames = []
 
 t1 = time.time()
 cppt1 = time.time()
-teapot.rotation += 0.1
+teapot.rotation.y += 0.1
 teapot.render(cam, screen)
 cppt2 = time.time()
 print(f"cpp time to render: {(cppt2-cppt1) * 1000:0.4f} ms")
@@ -41,7 +42,7 @@ img_draw.rectangle((0,0,dim[0]-1,dim[1]-1), "black")
 for i in range(60):
     t1 = time.time()
     cppt1 = time.time()
-    teapot.rotation += 0.1
+    teapot.rotation.y += 0.1
     teapot.render(cam, screen)
     cppt2 = time.time()
     print(f"cpp time to render: {(cppt2-cppt1) * 1000:0.4f} ms")
@@ -53,7 +54,7 @@ for i in range(60):
 
 t1 = time.time()
 cppt1 = time.time()
-teapot.rotation += 0.1
+teapot.rotation.y += 0.1
 teapot.render(cam, screen)
 cppt2 = time.time()
 print(f"cpp time to render: {(cppt2-cppt1) * 1000:0.4f} ms")

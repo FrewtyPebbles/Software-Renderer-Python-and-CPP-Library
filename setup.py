@@ -1,6 +1,5 @@
 from os import getenv, listdir, path
-from setuptools import setup
-from distutils.extension import Extension
+from setuptools import setup, Extension
 from Cython.Build import cythonize
 from dotenv import load_dotenv
 
@@ -31,10 +30,11 @@ EXTENSIONS = [
               include_dirs=INCLUDE_DIRS,
               libraries=LIBRARIES,
               library_dirs=LIBRARY_DIRS,
-              extra_compile_args=["/MT", "/O3"],
+              extra_compile_args=["/MT", "/std:c++20", "/MP", "/Ox"],
               )
     for pyx_dep in pyx_deps
 ]
+
 
 setup(
     name=MODULE_NAME,

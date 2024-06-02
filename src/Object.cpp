@@ -4,6 +4,8 @@
 #include "Mesh.h"
 #include <chrono>
 #include <thread>
+#include "util.h"
+
 
 
 object::object(mesh* mesh, vec3 position, vec3 rotation, vec3 scale) : mesh_data(mesh), position(position), rotation(rotation), scale(scale) {}
@@ -12,21 +14,30 @@ void object::render(camera& camera, screen& screen) {
     //std::cout << "Threads available: " << std::thread::hardware_concurrency() << std::endl;
     camera.frame_buffer.clear();
     camera.depth_buffer = camera.cleared_depth_buffer;
-    vector<polygon> polygons = this->mesh_data->get_polygons(
-        this->get_translation(
-            this->get_rotation(
-                this->mesh_data->vertexes
-            )
-        ) 
-    );
-    
-    vector<std::thread*> threads;
-    size_t p_len = polygons.size();
-    for (size_t i = 0; i < p_len; i++) {
-        screen.threadpool->QueueJob(std::bind(&polygon::render, &polygons[i], &camera, &screen));
-        // polygons[i].render(&camera, &screen);
+    vector<polygon> polygons;
+    for (auto [meshname, meshg] : *this->mesh_data->groups) {
+        //std::cout << "next_mesh = " << meshname << " :: " << meshg.vertexes->size() << std::endl;
+        polygons = meshg.get_polygons(
+            this->get_translation(
+                this->get_rotation(
+                    *meshg.vertexes
+                )
+            ) 
+        );
+
+        
+        //std::cout << "MAT NAME " << meshg.material_data->name << std::endl;
+        //print_vec(polygons);
+        
+        vector<std::thread*> threads;
+        size_t p_len = polygons.size();
+        for (size_t i = 0; i < p_len; i++) {
+            screen.threadpool->QueueJob(std::bind(&polygon::render, &polygons[i], &camera, &screen));
+            // polygons[i].render(&camera, &screen);
+        }
+        while (screen.threadpool->busy()){}
     }
-    while (screen.threadpool->busy()){}
+    
 }
  
 vector<vec3> object::get_translation(vector<vec3> vertexes) {
