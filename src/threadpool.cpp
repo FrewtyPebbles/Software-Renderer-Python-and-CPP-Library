@@ -32,7 +32,7 @@ void ThreadPool::ThreadLoop() {
     }
 }
 
-void ThreadPool::QueueJob(const std::function<void()>& job) {
+void ThreadPool::QueueJob(const std::function<void()> job) {
     {
         std::unique_lock<std::mutex> lock(queue_mutex);
         jobs.push(job);

@@ -5,12 +5,16 @@
 #include "threadpool.h"
 
 using std::vector;
+using std::unordered_set;
 class vec3;
+class object;
 
 struct pixel {
     pixel(): x(0), y(0), color(make_tup<uint8_t, 3>({0,0,0})){}
     pixel(int x, int y, tup3ui8 color)
         : x(x), y(y), color(color) {}
+    pixel(int x, int y)// this is used for hashing
+        : x(x), y(y) {}
     pixel(const pixel& o) : x(o.x), y(o.y), color(o.color) {}
     int x;
     int y;
@@ -33,17 +37,6 @@ struct pixelHash {
     }
 };
 
-class camera {
-public:
-    camera();
-    camera(vec3* position, int view_width, int view_height, int view_distance);
-    vec3* position;
-    int view_width, view_height, view_distance;
-    vector<vector<float>> depth_buffer;
-    vector<vector<float>> cleared_depth_buffer;
-    vector<pixel> frame_buffer;
-}; 
- 
 class screen {
 public:
     screen();
@@ -52,3 +45,16 @@ public:
     int width, height;
     ThreadPool* threadpool = nullptr;
 };
+
+class camera {
+public:
+    camera();
+    camera(vec3* position, int view_width, int view_height, int focal_length, float fov);
+    void render(vector<object*> objects, screen& screen);
+    vec3* position;
+    int view_width, view_height, focal_length;
+    vector<vector<float>> depth_buffer;
+    vector<vector<float>> cleared_depth_buffer;
+    vector<pixel> frame_buffer;
+    float fov;
+}; 

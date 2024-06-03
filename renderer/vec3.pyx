@@ -88,5 +88,11 @@ cdef class Vec3:
     def dot(self, Vec3 other) -> float:
         return self.c_class.cross(other.c_class)
 
+    cpdef float get_magnitude(self):
+        return self.c_class.get_magnitude()
+
+    cpdef Vec3 get_normalized(self):
+        return _from_cpp(self.c_class.get_normalized())
+
 cdef Vec3 _from_cpp(vec3 cppinst):
     return Vec3(cppinst.x, cppinst.y, cppinst.z)

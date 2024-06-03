@@ -22,7 +22,8 @@ cdef extern from "../src/Vec3.h":
         vec3 operator/(float& other)
         float dot(vec3& other)
         float cross(vec3& other)
-
+        float get_magnitude()
+        vec3 get_normalized()
 
 cdef class Vec3:
     cdef vec3 c_class
@@ -44,5 +45,9 @@ cdef class Vec3:
     cpdef Vec3 vecdiv(self, Vec3 other)
 
     cpdef Vec3 floatdiv(self, float other)
+    
+    cpdef float get_magnitude(self)
+
+    cpdef Vec3 get_normalized(self)
     
 cdef Vec3 _from_cpp(vec3 cppinst)

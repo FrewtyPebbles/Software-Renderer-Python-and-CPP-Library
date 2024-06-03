@@ -63,6 +63,20 @@ public:
         return new_vec;
     }
 
+    float distance_from_view_plane(camera* camera, screen* screen);
+    
+    float clip_near_plane(camera* camera, screen* screen);
+
+    float clip_left_plane(camera* camera, screen* screen);
+
+    float clip_right_plane(camera* camera, screen* screen);
+
+    float clip_bottom_plane(camera* camera, screen* screen);
+
+    float clip_top_plane(camera* camera, screen* screen);
+
+    bool not_clipping(camera* camera, screen* screen);
+
     // Operators
 
     inline vec3 operator+(vec3 const& other)
@@ -114,5 +128,20 @@ public:
     {
         return fmaf(y, other.z, -z*other.y) + fmaf(z, other.x, -x*other.z) + fmaf(z, other.y, -y*other.x);
     }
+    inline float get_magnitude() {
+        float x = this->x;
+        float y = this->y;
+        float z = this->z;
+        return sqrt(fmaf(x, x, fmaf(y, y, z*z)));
+    }
+        
+    
+    inline vec3 get_normalized() {
+        float mag = this->get_magnitude();
+        if (mag == 0.0)
+            return vec3(this->x, this->y, this->z);
+        return vec3(this->x/mag, this->y/mag, this->z/mag);
+    }
+        
 };
 

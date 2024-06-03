@@ -3,6 +3,7 @@ from renderer.vec3 cimport vec3
 from libcpp.vector cimport vector
 from renderer.tup cimport tup3ui8
 from libcpp.unordered_set cimport unordered_set
+from renderer.object cimport object3d, Object
   
 cdef extern from "../src/Camera.h":
     cdef cppclass pixel:
@@ -22,12 +23,14 @@ cdef extern from "../src/Camera.h":
 
     cdef cppclass camera:
         camera() except +
-        camera(vec3* position, int view_width, int view_height, int view_distance) except +
+        camera(vec3* position, int view_width, int view_height, int focal_length, float fov) except +
+        void render(vector[object3d*] objects, screen& screen)
         vec3 position
-        int view_width, view_height, view_distance
+        int view_width, view_height, focal_length
         vector[vector[float]] depth_buffer
         vector[vector[float]] cleared_depth_buffer
         vector[pixel] frame_buffer
+        float fov
 
 
 cdef class Screen:
@@ -36,4 +39,4 @@ cdef class Screen:
 cdef class Camera:
     cdef camera c_class
 
-    # cpdef (int, int, (int, int, int)) get_pixel(self)
+    cpdef void render(self, list[Object] objects, Screen screen)

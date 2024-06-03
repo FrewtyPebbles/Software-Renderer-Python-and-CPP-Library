@@ -1,5 +1,14 @@
 #include "Camera.h"
 #include "Vec3.h"
+#include "Object.h"
+
+void camera::render(vector<object*> objects, screen& screen) {
+    this->frame_buffer.clear();
+    this->depth_buffer = this->cleared_depth_buffer;
+    for (object * obj : objects) {
+        obj->render(*this, screen);
+    }
+}
 
 screen::screen() {
     this->width = 500;
@@ -23,11 +32,12 @@ screen::~screen() {
 camera::camera() {}
 
 
-camera::camera(vec3* position, int view_width, int view_height, int view_distance) {
+camera::camera(vec3* position, int view_width, int view_height, int focal_length, float fov) {
     this->position = position;
     this->view_width = view_width;
     this->view_height = view_height;
-    this->view_distance = view_distance;
+    this->focal_length = focal_length;
+    this->fov = fov;
     
     // create "empty" depth buffer
     vector<vector<tup<uint8_t, 3>>> frame_outer_vec;

@@ -45,6 +45,10 @@ cdef class V3Property:
     @staticmethod
     cdef V3Property init(vec3* ptr)
 
+    cpdef float get_magnitude(self)
+
+    cpdef Vec3 get_normalized(self)
+
     cpdef Vec3 vecadd(self, Vec3 other)
 
     cpdef Vec3 floatadd(self, float other)

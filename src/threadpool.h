@@ -9,7 +9,7 @@ static std::mutex render_mut;
 class ThreadPool {
 public:
     void Start();
-    void QueueJob(const std::function<void()>& job);
+    void QueueJob(const std::function<void()> job);
     void Stop();
     bool busy();
 

@@ -6,13 +6,18 @@ from renderer.camera cimport Camera, Screen
 cimport renderer.vec3 as v3
 
 cdef class V3Property:
-
+    # THIS NEEDS TO HAVE ALL OF THE SAME METHODS AND PROPERTIES AS Vec3
     @staticmethod
     cdef V3Property init(vec3* ptr):
         ret = V3Property()
         ret.c_class = ptr
         return ret
 
+    cpdef float get_magnitude(self):
+        return self.c_class.get_magnitude()
+
+    cpdef Vec3 get_normalized(self):
+        return v3._from_cpp(self.c_class.get_normalized())
 
     @property
     def x(self):

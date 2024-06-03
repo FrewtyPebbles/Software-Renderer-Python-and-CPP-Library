@@ -31,40 +31,45 @@ tup<int, 2> polygon::get_texture_coordinates(int x, int y, PROJECTIONS proj, int
 }
  
 void polygon::render(camera* camera, screen* screen) {
-    int shade;
-    tup<uint8_t, 3> color;
-    //vector<pixel> local_buffer;
-    tup<int, 2> hor_bounds, tex_coords;
-    PROJECTIONS projections = this->project(camera, screen);
-    tup<int, 2> vert_bounds = this->get_vertical_bounds(projections, camera, screen);
-    float z;
-    auto texture = this->mesh_data->material_data->diffuse_texture;
-    for (int y = vert_bounds[0]; y < vert_bounds[1]; y++) {
-        hor_bounds = this->get_render_row_range(y, projections, camera, screen);
-        for (int x = hor_bounds[0]; x < hor_bounds[1]; x++) {
-            z = this->bary_get_z(x, y, projections);
-            if (camera->depth_buffer[x][y] > z) {
+    if (this->A.not_clipping(camera, screen)
+    && this->B.not_clipping(camera, screen)
+    && this->C.not_clipping(camera, screen)) {
+        int shade;
+        tup<uint8_t, 3> color;
+        //vector<pixel> local_buffer;
+        tup<int, 2> hor_bounds, tex_coords;
+        PROJECTIONS projections = this->project(camera, screen);
+        tup<int, 2> vert_bounds = this->get_vertical_bounds(projections, camera, screen);
+        float z;
+        auto texture = this->mesh_data->material_data->diffuse_texture;
+        for (int y = vert_bounds[0]; y < vert_bounds[1]; y++) {
+            hor_bounds = this->get_render_row_range(y, projections, camera, screen);
+            for (int x = hor_bounds[0]; x < hor_bounds[1]; x++) {
                 
-                tex_coords = this->get_texture_coordinates(x,y,projections, texture.cols, texture.rows);
-                auto cvcolor = texture.at<cv::Vec3b>(
-                    clamp(tex_coords[1], 0, texture.rows-1),
-                    clamp(tex_coords[0], 0, texture.cols-1)
-                );
-                //shade = std::max(0, (255 - static_cast<uint8_t>(z/130*255)));
-                shade = static_cast<int>(z/160*255);
-                color = make_tup<uint8_t, 3>({
-                    (uint8_t)clamp((int)(cvcolor[2]), 0, 255),
-                    (uint8_t)clamp((int)(cvcolor[1]), 0, 255),
-                    (uint8_t)clamp((int)(cvcolor[0]), 0, 255)
-                });
-                //std::cout << color << "\n";
-                camera->depth_buffer[x][y] = z;
-                render_mut.lock();
-                camera->frame_buffer.push_back(pixel(x, y, color));
-                render_mut.unlock();
+                z = this->bary_get_z(x, y, projections);
+                if (camera->depth_buffer[x][y] > z) {
+                    
+                    tex_coords = this->get_texture_coordinates(x,y,projections, texture.cols, texture.rows);
+                    auto cvcolor = texture.at<cv::Vec3b>(
+                        clamp(texture.rows - tex_coords[1], 0, texture.rows-1),
+                        clamp(tex_coords[0], 0, texture.cols-1)
+                    );
+                    shade = - z/700*255;
+                    color = make_tup<uint8_t, 3>({
+                        (uint8_t)clamp((int)(cvcolor[2] + shade), 0, 255),
+                        (uint8_t)clamp((int)(cvcolor[1] + shade), 0, 255),
+                        (uint8_t)clamp((int)(cvcolor[0] + shade), 0, 255)
+                    });
+                    //std::cout << color << "\n";
+                    camera->depth_buffer[x][y] = z;
+                    render_mut.lock();
+                    camera->frame_buffer.push_back(pixel(x, y, color));
+                    render_mut.unlock();
+                }
             }
         }
     }
+    
     
 }
 
