@@ -3,6 +3,7 @@
 #include "Tup.h"
 #include <unordered_set>
 #include "threadpool.h"
+#include <windows.h>
 
 using std::vector;
 using std::unordered_set;

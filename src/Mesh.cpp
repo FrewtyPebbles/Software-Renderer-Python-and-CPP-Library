@@ -32,6 +32,9 @@ vector<polygon> meshgroup::get_polygons(vector<vec3> vertexes) {
                 this
             ));
     }
+    std::sort(polygons.begin(), polygons.end(), [](polygon a, polygon b){
+        return std::min(a.A.z, std::min(a.B.z, a.C.z)) < std::min(b.A.z, std::min(b.B.z, b.C.z));
+    });
     //print_vec(polygons);
     return polygons;
 }

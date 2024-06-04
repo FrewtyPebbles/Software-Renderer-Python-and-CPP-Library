@@ -28,9 +28,10 @@ EXTENSIONS = [
               sources=[pyx_dep, *c_deps],
               language="c++",
               include_dirs=INCLUDE_DIRS,
-              libraries=LIBRARIES,
+              libraries=LIBRARIES + ["user32", "gdi32"],
               library_dirs=LIBRARY_DIRS,
               extra_compile_args=["/MT", "/std:c++20", "/MP", "/Ox"],
+              extra_link_args=[]
               )
     for pyx_dep in pyx_deps
 ]

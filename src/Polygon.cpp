@@ -6,11 +6,11 @@
 #include <array>
 #include <iostream>
 #include <tuple>
-#include <mutex>
 #include "threadpool.h"
 #include "util.h"
 #include "Mesh.h"
 #include <opencv2/opencv.hpp>
+#include <windows.h>
 
 // TODO: ADD REPEATING TEXTURES
  
@@ -61,7 +61,9 @@ void polygon::render(camera* camera, screen* screen) {
                         (uint8_t)clamp((int)(cvcolor[0] + shade), 0, 255)
                     });
                     //std::cout << color << "\n";
+                    
                     camera->depth_buffer[x][y] = z;
+                    
                     render_mut.lock();
                     camera->frame_buffer.push_back(pixel(x, y, color));
                     render_mut.unlock();

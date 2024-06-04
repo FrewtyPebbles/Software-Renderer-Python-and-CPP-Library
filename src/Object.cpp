@@ -30,7 +30,7 @@ void object::render(camera& camera, screen& screen) {
         size_t p_len = polygons.size();
         for (size_t i = 0; i < p_len; i++) {
             screen.threadpool->QueueJob(std::bind(&polygon::render, polygons[i], &camera, &screen));
-            // polygons[i].render(&camera, &screen);
+            //polygons[i].render(&camera, &screen);
         }
     }
     while (screen.threadpool->busy()){}

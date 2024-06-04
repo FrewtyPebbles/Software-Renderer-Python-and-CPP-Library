@@ -5,6 +5,9 @@
 void camera::render(vector<object*> objects, screen& screen) {
     this->frame_buffer.clear();
     this->depth_buffer = this->cleared_depth_buffer;
+    std::sort(objects.begin(), objects.end(), [](object* a, object* b){
+        return (a->position.z) < (b->position.z);
+    });
     for (object * obj : objects) {
         obj->render(*this, screen);
     }
@@ -56,4 +59,5 @@ camera::camera(vec3* position, int view_width, int view_height, int focal_length
     }
     this->cleared_depth_buffer = depth_outer_vec;
     this->depth_buffer = depth_outer_vec;
+
 }  
