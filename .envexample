@@ -1,3 +1,2 @@
-INC_DIR = opencv/include/path
-LIB_DIR = opencv/lib/path
-BIN_DIR = opencv/bin/path
+INCLUDE_DIR = path\to\include
+STATIC_LIB_DIR = path\to\static\libs

@@ -11,7 +11,7 @@
 #include "Mesh.h"
 #include <opencv2/opencv.hpp>
 #include <windows.h>
-
+#include <SDL2/SDL.h>
 // TODO: ADD REPEATING TEXTURES
  
 float polygon::bary_get_z(int x, int y, PROJECTIONS proj) {
@@ -65,7 +65,8 @@ void polygon::render(camera* camera, screen* screen) {
                     camera->depth_buffer[x][y] = z;
                     
                     render_mut.lock();
-                    camera->frame_buffer.push_back(pixel(x, y, color));
+                    camera->frame_buffer[(y*camera->view_width) + x] = SDL_MapRGB(SDL_AllocFormat(SDL_PIXELFORMAT_RGB888), color[0], color[1], color[2]);;
+                    camera->py_frame_buffer.push_back(pixel(x, y, color));
                     render_mut.unlock();
                 }
             }

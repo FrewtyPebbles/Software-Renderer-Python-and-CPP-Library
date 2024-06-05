@@ -2,26 +2,42 @@
 #ifndef UNICODE
 #define UNICODE
 #endif
-#include <windows.h>
 #include <string>
 #include <thread>
+#include <SDL2/SDL.h>
 
-using std::wstring;
+using std::string;
 class camera;
 class screen;
+
+enum class event {
+    NOTHING,
+
+    // WINDOW MANAGEMENT
+    WINDOW_CLOSE,
+
+    // KEYS
+    KEY_UP,
+    KEY_DOWN,
+    KEY_RIGHT,
+    KEY_LEFT,
+    KEY_SPACE
+};
+
 class window {
 public:
     window();
-    window(wstring title, camera* cam, screen* scr);
+    window(string title, camera* cam, screen* scr, int width, int height);
+    ~window();
     camera* cam;
     screen* scr;
-    wstring title;
+    string title;
+    int width, height;
+    event current_event;
     void update();
 private:
-    void create_window(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow);
-    HWND hwnd;
-    WNDCLASS window_class;
-    static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-    std::thread window_loop;
-    bool is_painting;
+    void create_window();
+    SDL_Window* app_window = NULL;
+    SDL_Renderer* renderer = NULL;
+    SDL_Texture* texture = NULL;
 };

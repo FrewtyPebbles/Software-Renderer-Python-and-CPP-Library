@@ -9,7 +9,7 @@ cpdef void render(object img_draw, Camera cam):
     cdef:
         pixel pxl
         uint8* color
-        vector[pixel] pixl_vec = cam.c_class.frame_buffer
+        vector[pixel] pixl_vec = cam.c_class.py_frame_buffer
         size_t fb_len = pixl_vec.size()
         size_t i
     with nogil:

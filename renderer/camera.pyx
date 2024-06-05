@@ -15,7 +15,10 @@ cdef class Screen:
 
 cdef class Camera:
     def __init__(self, Vec3 position, int view_width, int view_height, int focal_length, float fov) -> None:
-        self.c_class = camera(&position.c_class, view_width, view_height, focal_length, fov)
+        self.c_class = new camera(&position.c_class, view_width, view_height, focal_length, fov)
+
+    def __dealloc__(self):
+        del self.c_class
 
     cpdef void render(self, list[Object] objects, Screen screen):
         cdef:

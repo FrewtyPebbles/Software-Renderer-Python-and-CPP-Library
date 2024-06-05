@@ -1,7 +1,7 @@
 # distutils: language = c++
 from renderer.vec3 cimport vec3
 from libcpp.vector cimport vector
-from renderer.tup cimport tup3ui8
+from renderer.tup cimport tup3ui8, uint8
 from libcpp.unordered_set cimport unordered_set
 from renderer.object cimport object3d, Object
   
@@ -29,7 +29,8 @@ cdef extern from "../src/Camera.h":
         int view_width, view_height, focal_length
         vector[vector[float]] depth_buffer
         vector[vector[float]] cleared_depth_buffer
-        vector[pixel] frame_buffer
+        vector[pixel] py_frame_buffer
+        unsigned int* frame_buffer
         float fov
 
 
@@ -37,6 +38,6 @@ cdef class Screen:
     cdef screen* c_class
 
 cdef class Camera:
-    cdef camera c_class
+    cdef camera* c_class
 
     cpdef void render(self, list[Object] objects, Screen screen)

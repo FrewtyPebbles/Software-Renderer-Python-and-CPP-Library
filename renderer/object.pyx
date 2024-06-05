@@ -169,7 +169,7 @@ cdef class Object:
 
 
     cpdef void render(self, Camera camera, Screen screen):
-        self.c_class.render(camera.c_class, screen.c_class[0])
+        self.c_class.render(camera.c_class[0], screen.c_class[0])
 
 
 

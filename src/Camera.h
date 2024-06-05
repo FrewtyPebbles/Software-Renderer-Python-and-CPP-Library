@@ -51,11 +51,13 @@ class camera {
 public:
     camera();
     camera(vec3* position, int view_width, int view_height, int focal_length, float fov);
+    ~camera();
     void render(vector<object*> objects, screen& screen);
     vec3* position;
     int view_width, view_height, focal_length;
     vector<vector<float>> depth_buffer;
     vector<vector<float>> cleared_depth_buffer;
-    vector<pixel> frame_buffer;
+    vector<pixel> py_frame_buffer;
+    uint32_t* frame_buffer;
     float fov;
 }; 

@@ -3,115 +3,111 @@
 #include "Camera.h"
 #include <iostream>
 #include <mutex>
+#include <format>
+
+window::~window(){
+    SDL_DestroyTexture(this->texture);
+    SDL_DestroyRenderer(this->renderer);
+    SDL_DestroyWindow(this->app_window);
+    SDL_Quit();
+}
 
 window::window() {
-    this->title = L"Default Window Title";
-    this->create_window(0, 0, 0, SW_SHOW);
+    this->title = "Default Window Title";
+    this->create_window();
 }
 
-window::window(wstring title, camera* cam, screen* scr) : cam(cam), scr(scr), title(title) {
-    this->create_window(0, 0, 0, SW_SHOW);
+window::window(string title, camera* cam, screen* scr, int width, int height) : cam(cam), scr(scr), title(title), width(width), height(height), current_event(event::NOTHING) {
+    this->create_window();
 }
 
-void window::create_window(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow) {
-    LPCWSTR CLASS_NAME = L"Window Class";
-    
-    this->window_class = { };
-
-    this->window_class.lpfnWndProc   = this->WindowProc;
-    this->window_class.hInstance     = hInstance;
-    this->window_class.lpszClassName = CLASS_NAME;
-
-    RegisterClass(&this->window_class);
-
-    this->hwnd = CreateWindowEx(
-        0,                              // Optional window styles.
-        CLASS_NAME,                     // Window class
-        this->title.c_str(),    // Window text
-        WS_OVERLAPPEDWINDOW,            // Window style
-
-        // Size and position
-        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-
-        NULL,       // Parent window    
-        NULL,       // Menu
-        hInstance,  // Instance handle
-        this        // Additional application data
-        );
-
-
-    if (hwnd == NULL)
-    {
-        throw "Failed to create application window.";
+void window::create_window() {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        throw std::format("could not initialize sdl2: {}\n", SDL_GetError());
+    }
+    this->app_window = SDL_CreateWindow(
+        this->title.c_str(),
+        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+        this->width, this->height,
+        SDL_WINDOW_SHOWN
+	);
+    if (this->app_window == NULL) {
+        throw std::format("could not create window: {}\n", SDL_GetError());
     }
 
-    ShowWindow(hwnd, nCmdShow);
+    this->renderer = SDL_CreateRenderer(this->app_window, -1, SDL_RENDERER_ACCELERATED);
 
-    this->window_loop = std::thread([&]{
-        MSG msg = { };
-        while (GetMessage(&msg, this->hwnd, 0, 0) > 0)
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-    });
+    this->texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_STREAMING, this->width, this->height);
 
     return;
 }
 
 
 void window::update() {
-    this->is_painting = true;
-    InvalidateRect(this->hwnd, NULL, TRUE);
-    UpdateWindow(this->hwnd);
-}
 
-std::mutex window_mutex;
-LRESULT CALLBACK window::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    window* self;
-    if (uMsg == WM_NCCREATE) {
-        self = static_cast<window*>(reinterpret_cast<CREATESTRUCT*>(lParam)->lpCreateParams);
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        /* this is where we will record sdl events */
+        switch (event.type) {
+            
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                    case SDLK_UP:
+                        this->current_event = event::KEY_UP;
+                        break;
 
-        SetLastError(0);
-        if (!SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(self)))
-        {
-            if (GetLastError() != 0)
-                return FALSE;
-        }
-    } else {
-        self = reinterpret_cast<window*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
-    }
-    switch (uMsg)
-    {
-        case WM_DESTROY:
-            PostQuitMessage(0);
-            return 0;
+                    case SDLK_DOWN:
+                        this->current_event = event::KEY_DOWN;
+                        break;
 
-        case WM_PAINT:
-            {
-                
-                PAINTSTRUCT ps;
-                HDC hdc = BeginPaint(hwnd, &ps);
-                if (self) {
-                    RECT rect = {0,0,self->cam->view_width,self->cam->view_height};
-                    InvalidateRect(hwnd, &rect, TRUE);
-                    FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW+1));
-                    // All painting occurs here, between BeginPaint and EndPaint.
+                    case SDLK_LEFT:
+                        this->current_event = event::KEY_LEFT;
+                        break;
 
-                    for (pixel pixl : self->cam->frame_buffer) {
-                        SetPixel(hdc, pixl.x, pixl.y, RGB(pixl.color[0],pixl.color[1],pixl.color[2]));
-                    }
+                    case SDLK_RIGHT:
+                        this->current_event = event::KEY_RIGHT;
+                        break;
+
+                    case SDLK_SPACE:
+                        this->current_event = event::KEY_SPACE;
+                        break;
                 }
-                
-                EndPaint(hwnd, &ps);
-                
-            }
+                break;
 
-            if (self) {
-                self->is_painting = false;
-            }
-            return 0;
+            case SDL_WINDOWEVENT:
+
+                switch (event.window.event) {
+
+                    case SDL_WINDOWEVENT_CLOSE:   // exit game
+                        this->current_event = event::WINDOW_CLOSE;
+                        break;
+
+                    default:
+                        this->current_event = event::NOTHING;
+                        break;
+                }
+                break;
+
+            default:
+                this->current_event = event::NOTHING;
+                break;
+        }
     }
-    return DefWindowProc(hwnd, uMsg, wParam, lParam);
+
+    void* texPixels;
+    int pitch;
+    SDL_LockTexture(texture, NULL, &texPixels, &pitch);
+    // Copy pixel data into texture's pixel buffer
+    memcpy(texPixels, this->cam->frame_buffer, this->width * this->height * sizeof(Uint32));
+    // Unlock texture
+    SDL_UnlockTexture(this->texture);
+
+    SDL_RenderClear(this->renderer);
+
+    // Render texture
+    SDL_RenderCopy(this->renderer, this->texture, NULL, NULL);
+
+    // Update screen
+    SDL_RenderPresent(this->renderer);
+
 }

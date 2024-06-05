@@ -29,7 +29,7 @@ cdef class Vec3:
         self.c_class.z = value
 
     cpdef (float, float) project(self, Camera camera_obj, Screen screen_obj):
-        cdef tup2f res = self.c_class.project(&camera_obj.c_class, screen_obj.c_class)
+        cdef tup2f res = self.c_class.project(camera_obj.c_class, screen_obj.c_class)
         return res.data[0], res.data[1]
 
     # OPERATORS
