@@ -6,6 +6,7 @@ cdef extern from "../src/Window.h":
     cpdef enum class event:
         NOTHING,
         WINDOW_CLOSE,
+        QUIT,
         KEY_UP,
         KEY_DOWN,
         KEY_RIGHT,

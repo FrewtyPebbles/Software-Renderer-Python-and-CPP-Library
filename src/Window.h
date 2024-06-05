@@ -5,6 +5,7 @@
 #include <string>
 #include <thread>
 #include <SDL2/SDL.h>
+#include "glad/glad.h"
 
 using std::string;
 class camera;
@@ -15,6 +16,7 @@ enum class event {
 
     // WINDOW MANAGEMENT
     WINDOW_CLOSE,
+    QUIT,
 
     // KEYS
     KEY_UP,
@@ -34,10 +36,12 @@ public:
     string title;
     int width, height;
     event current_event;
+    bool fullscreen = false;
     void update();
 private:
     void create_window();
     SDL_Window* app_window = NULL;
     SDL_Renderer* renderer = NULL;
     SDL_Texture* texture = NULL;
+    SDL_GLContext gl_context = NULL;
 };

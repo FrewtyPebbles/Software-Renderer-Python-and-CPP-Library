@@ -12,7 +12,8 @@ PY_PATH = path.join(path.dirname(__file__), "renderer/")
 C_PATH = path.join(path.dirname(__file__), "src/")
 
 INCLUDE_DIRS = [
-    getenv("INCLUDE_DIR")
+    getenv("INCLUDE_DIR"),
+    path.join(path.dirname(__file__), "glad/include/")
 ]
 LIBRARY_DIRS = [
     getenv("STATIC_LIB_DIR")
@@ -20,7 +21,10 @@ LIBRARY_DIRS = [
 
 LIBRARIES = [f.replace(".lib", "") for f in listdir(getenv("STATIC_LIB_DIR")) if f.endswith(".lib")]
 
-c_deps = [path.join(C_PATH, cppf) for cppf in listdir(C_PATH) if cppf.endswith(".cpp")]
+c_deps = [
+    *[path.join(C_PATH, cppf) for cppf in listdir(C_PATH) if cppf.endswith(".cpp")],
+    path.join(path.dirname(__file__), "glad/src/glad.c")
+]
 pyx_deps = [path.join(PY_PATH, cppf) for cppf in listdir(PY_PATH) if cppf.endswith(".pyx")]
 print()
 EXTENSIONS = [

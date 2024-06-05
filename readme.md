@@ -4,42 +4,16 @@ This is a 3d rendering library for python written in c++.  It is a re-write of a
 
 Here are some rendering tests using this library and PIL as a render medium:
 
+successfull application window test with keyboard control input:
+
+![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/tests/sdl_3d_engine.gif)
+
 pirate ship sailing arround teapot:
 
 ![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/tests/boat_and_teapot.gif)
-
-pirate ship fail:
-
-![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/tests/broken_pirate_ship.gif)
 
 Distance shaded texture map:
 
 ![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/tests/distance_shaded_texture_mapped.gif)
 
-First successful texture map:
-
-![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/tests/texture_mapping_success.gif)
-
-First render after porting over position/rotation:
-
-![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/tests/rotating%20teapot.gif)
-
-Latest success using barycentric coordinates for depth buffering:
-
-![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/tests/barycentric_coordinate_success.png)
-
-A cool looking failure I rendered while getting barycentric coordinates working:
-
-![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/tests/barycentric_coordinate_fail.png)
-
-Another cool looking failure I rendered while getting barycentric coordinates working:
-
-![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/tests/depth_failure.png)
-
-What improper depth buffering was rendering:
-
-![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/tests/first_successful_render.png)
-
-A failure I rendered while porting over the projection mapping:
-
-![](https://github.com/FrewtyPebbles/python-c---rasterizer-library/blob/main/tests/failure_mesh_render_parrallel.png)
+Check out **tests** to see more tests.

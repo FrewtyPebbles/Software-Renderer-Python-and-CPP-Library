@@ -51,6 +51,7 @@ while True:
             math.sin(i/3)/2 * 5,
             math.sin(ship.rotation.y)*15
         )
+    
 
     if window.current_event == event.KEY_RIGHT:
         ship.rotation.y -= 0.1
@@ -58,6 +59,5 @@ while True:
     if window.current_event == event.KEY_LEFT:
         ship.rotation.y += 0.1
 
-    if window.current_event == event.WINDOW_CLOSE:
-        print("CLOSE WINDOW")
+    if window.current_event == event.QUIT:
         break
