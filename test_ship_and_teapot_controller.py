@@ -26,6 +26,11 @@ render_list = [
     teapot
 ]
 
+print("linking shaders")
+for ob in render_list:
+    ob.link_shaders()
+print("shaders linked")
+
 i=0
 while True:
     t1 = time.time()
@@ -51,7 +56,6 @@ while True:
             math.sin(i/3)/2 * 5,
             math.sin(ship.rotation.y)*15
         )
-    
 
     if window.current_event == event.KEY_RIGHT:
         ship.rotation.y -= 0.1

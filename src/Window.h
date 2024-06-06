@@ -4,8 +4,10 @@
 #endif
 #include <string>
 #include <thread>
+#include "glad/gl.h"
 #include <SDL2/SDL.h>
-#include "glad/glad.h"
+#include <SDL2/SDL_opengl.h>
+
 
 using std::string;
 class camera;

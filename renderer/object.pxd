@@ -3,12 +3,15 @@ from renderer.mesh cimport mesh, Mesh
 from renderer.vec3 cimport vec3, Vec3
 from renderer.camera cimport camera, screen, Camera, Screen
 from libcpp.vector cimport vector
+from renderer.shader cimport shader, Shader, ShaderType
 
 cdef extern from "../src/Object.h":
     cdef cppclass object3d:
         # alias for cpp class object since name object is reserved by python
         object3d() except +
         object3d(mesh* mesh, vec3 position, vec3 rotation, vec3 scale) except +
+        object(mesh* mesh, vec3 position, vec3 rotation, vec3 scale, shader vertex_shader) except +
+        object(mesh* mesh, vec3 position, vec3 rotation, vec3 scale, shader vertex_shader, shader fragment_shader) except +
         mesh* mesh_data
         vec3 position
         vec3 rotation
@@ -19,11 +22,14 @@ cdef extern from "../src/Object.h":
         vector[vec3] get_translation(vector[vec3] vertexes)
 
         vector[vec3] get_rotation(vector[vec3] vertexes)
+        void link_shaders() except +
 
 
 cdef class Object:
     cdef object3d c_class
     cdef Mesh mesh
+
+    cpdef void link_shaders(self)
     
     cpdef void render(self, Camera camera, Screen screen)
         

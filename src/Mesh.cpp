@@ -6,7 +6,21 @@
 #include <iostream>
 #include "debug.h"
 
+void meshgroup::get_gl_vert_inds(vector<vec3> vertexes, vector<unsigned int>* mut_inds) {
+    for (face fce : this->faces) {
+        mut_inds->push_back(fce.vertex_indicies[0]);
+        mut_inds->push_back(fce.vertex_indicies[1]);
+        mut_inds->push_back(fce.vertex_indicies[2]);
+    }
+}
 
+void meshgroup::get_gl_verts(vector<vec3> vertexes, vector<float>* mut_verts) {
+    for (vec3 vert : *this->vertexes) {
+        mut_verts->push_back(vert.x);
+        mut_verts->push_back(vert.y);
+        mut_verts->push_back(vert.z);
+    }
+}
  
 vector<polygon> meshgroup::get_polygons(vector<vec3> vertexes) {
     

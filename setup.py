@@ -23,7 +23,7 @@ LIBRARIES = [f.replace(".lib", "") for f in listdir(getenv("STATIC_LIB_DIR")) if
 
 c_deps = [
     *[path.join(C_PATH, cppf) for cppf in listdir(C_PATH) if cppf.endswith(".cpp")],
-    path.join(path.dirname(__file__), "glad/src/glad.c")
+    path.join(path.dirname(__file__), "glad/src/gl.c")
 ]
 pyx_deps = [path.join(PY_PATH, cppf) for cppf in listdir(PY_PATH) if cppf.endswith(".pyx")]
 print()
@@ -33,7 +33,9 @@ EXTENSIONS = [
               language="c++",
               include_dirs=INCLUDE_DIRS,
               libraries=LIBRARIES + [
-                  "kernel32", "user32", "gdi32", "winmm", "imm32", "ole32", "oleaut32", "version", "uuid", "advapi32", "setupapi", "shell32", "dinput8"
+                  "kernel32", "user32", "gdi32", "winmm", "imm32", "ole32",
+                  "oleaut32", "version", "uuid", "advapi32", "setupapi",
+                  "shell32", "dinput8", "opengl32"
               ],
               library_dirs=LIBRARY_DIRS,
               extra_compile_args=["/MT", "/std:c++20", "/MP", "/Ox"],

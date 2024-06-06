@@ -110,6 +110,9 @@ cdef class Object:
         self.mesh = mesh_instance
         self.c_class = object3d(mesh_instance.c_class, position.c_class, rotation.c_class, scale.c_class)
 
+    cpdef void link_shaders(self):
+        self.c_class.link_shaders()
+
     @property
     def position(self) -> V3Property:
         return V3Property.init(&self.c_class.position)

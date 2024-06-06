@@ -4,6 +4,7 @@
 #include <unordered_set>
 #include "threadpool.h"
 #include <windows.h>
+#include "glad/gl.h"
 
 using std::vector;
 using std::unordered_set;
@@ -47,6 +48,7 @@ public:
     ThreadPool* threadpool = nullptr;
 };
 
+
 class camera {
 public:
     camera();
@@ -60,4 +62,5 @@ public:
     vector<pixel> py_frame_buffer;
     uint32_t* frame_buffer;
     float fov;
+    bool use_software_renderer = false;
 }; 

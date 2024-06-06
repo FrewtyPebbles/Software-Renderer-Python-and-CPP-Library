@@ -49,7 +49,7 @@ struct face {
 };
  
 class meshgroup {
-public: 
+public:
     meshgroup() {} 
     meshgroup(vector<vec3>* vertexes, vector<vec3>* uv_vertexes, vector<vec3>* vertex_normals):
     vertexes(vertexes), 
@@ -64,6 +64,8 @@ public:
     material_data(rhs.material_data)
     {}
 
+    void get_gl_verts(vector<vec3> vertexes, vector<float>* mut_verts);
+    void get_gl_vert_inds(vector<vec3> vertexes, vector<unsigned int>* mut_inds);
     vector<polygon> get_polygons(vector<vec3> vertexes);
 
     vector<vec3>* vertexes;
