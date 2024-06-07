@@ -3,6 +3,7 @@
 #include "Object.h"
 #include <algorithm>
 
+
 void camera::render(vector<object*> objects, screen& screen) {
     this->py_frame_buffer.clear();
     std::fill(this->frame_buffer, this->frame_buffer + this->view_width*this->view_height, 0x000000FF);

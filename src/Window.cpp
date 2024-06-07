@@ -161,8 +161,8 @@ void window::update() {
         SDL_RenderPresent(this->renderer);
     }
 
-    glClearColor(0.7f, 0.9f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT); 
 
     SDL_GL_SwapWindow(this->app_window);
     SDL_Delay(1);

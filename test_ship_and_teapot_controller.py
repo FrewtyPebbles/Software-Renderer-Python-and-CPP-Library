@@ -1,12 +1,6 @@
 import time
 from PIL import Image, ImageDraw
-from renderer.vec3 import Vec3
-from renderer.camera import Camera, Screen
-from renderer.polygon import Polygon
-from renderer.mesh import Mesh
-from renderer.object import Object
-from renderer.rasterize import render
-from renderer.window import Window, event
+from renderer import Vec3, Camera, Screen, Polygon, Mesh, Object, Window, event
 import math
 
 
@@ -26,10 +20,10 @@ render_list = [
     teapot
 ]
 
-print("linking shaders")
-for ob in render_list:
-    ob.link_shaders()
-print("shaders linked")
+# print("linking shaders")
+# for ob in render_list:
+#     ob.link_shaders()
+# print("shaders linked")
 
 i=0
 while True:

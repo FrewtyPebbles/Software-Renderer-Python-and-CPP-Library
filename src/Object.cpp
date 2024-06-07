@@ -19,7 +19,8 @@ object::object(mesh* mesh, vec3 position, vec3 rotation, vec3 scale, shader vert
     this->fragment_shader = shader(default_fragment_shader, ShaderType::VERTEX);
 }
 object::object(mesh* mesh, vec3 position, vec3 rotation, vec3 scale, shader vertex_shader, shader fragment_shader)
-: mesh_data(mesh), position(position), rotation(rotation), scale(scale), vertex_shader(vertex_shader), fragment_shader(fragment_shader) {}
+: mesh_data(mesh), position(position), rotation(rotation), scale(scale), vertex_shader(vertex_shader), fragment_shader(fragment_shader) {
+}
 
 void object::link_shaders() {
     this->vertex_shader.compile();
@@ -58,34 +59,10 @@ void object::render(camera& camera, screen& screen) {
             meshg.get_gl_vert_inds(moved_verticies, &gl_inds);
         }
 
-        // Vertex Array Object
-        GLuint VAO, VBO;
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &VBO);
+        // this is where the render code should go
+        // do a test in a separate project before trying to do the render code.
 
-        glBindVertexArray(VAO);
-        // 2. copy our vertices array in a vertex buffer for OpenGL to use
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, gl_verts.size(), &gl_verts[0], GL_STATIC_DRAW);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-        glEnableVertexAttribArray(0);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-
-        // Element Buffer object
-        GLuint EBO;
-        glGenBuffers(1, &EBO);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, gl_inds.size(), &gl_inds[0],
-            GL_STATIC_DRAW);
-
-        // draw
-        glUseProgram(this->shader_program);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     } else {
         // software renderer

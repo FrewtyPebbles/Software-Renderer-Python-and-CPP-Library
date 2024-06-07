@@ -5,6 +5,8 @@
 #include "threadpool.h"
 #include <windows.h>
 #include "glad/gl.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
 
 using std::vector;
 using std::unordered_set;
@@ -62,5 +64,5 @@ public:
     vector<pixel> py_frame_buffer;
     uint32_t* frame_buffer;
     float fov;
-    bool use_software_renderer = false;
+    bool use_software_renderer = true; 
 }; 
