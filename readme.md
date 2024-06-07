@@ -2,9 +2,9 @@
 
 This is a 3d rendering library for python written in c++.  Right now it only has a software renderer, but I am working on an opengl renderer.
 
-As for the future of this project, I hope to turn it into a game engine and general 3d rendering library.
+As for the future of this project, I hope to turn it into a game engine and general 3d rendering tool.
 
-Here are some rendering tests using this library and PIL as a render medium:
+Here are some rendering tests using this library:
 
 successfull application window test with keyboard control input:
 
