@@ -1,8 +1,8 @@
 # 3D Projections in Python
 
-This is a 3d rendering library for python written in c++.  Right now it only has a software renderer, but I am working on an opengl renderer.
+> This project has been discontinued in favor of a new version of the engine using opengl.
 
-As for the future of this project, I hope to turn it into a game engine and general 3d rendering tool.
+This is a 3d rendering library for python written in c++.  Right now it only has a software renderer, but I am working on an opengl renderer.
 
 Here are some rendering tests using this library:
 
