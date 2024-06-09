@@ -1,11 +1,6 @@
 import time
 from PIL import Image, ImageDraw
-from renderer.vec3 import Vec3
-from renderer.camera import Camera, Screen
-from renderer.polygon import Polygon
-from renderer.mesh import Mesh
-from renderer.object import Object
-from renderer.rasterize import render
+from renderer import Vec3, Camera, Screen, Mesh, Object, render_PIL
 import math
 
 
@@ -56,7 +51,7 @@ teapot.position.y += math.cos(0)/2 * 5
 cam.render(render_list, screen)
 cppt2 = time.time()
 print(f"cpp time to render: {(cppt2-cppt1) * 1000:0.4f} ms")
-render(img_draw, cam)
+render_PIL(img_draw, cam)
 t2 = time.time()
 print(f"time to render: {(t2-t1) * 1000:0.4f} ms")
 frames.append(img.copy())
@@ -75,7 +70,7 @@ for i in range(60):
     teapot.rotation.x = math.cos(i/5)/2
     teapot.position.y += math.cos(i/3)/2 * 5
     cam.render(render_list, screen)
-    render(img_draw, cam)
+    render_PIL(img_draw, cam)
     t2 = time.time()
     print(f"time to render: {(t2-t1) * 1000:0.4f} ms")
     frames.append(img.copy())
@@ -97,7 +92,7 @@ teapot.position.y += math.cos(60/3)/2 * 5
 cam.render(render_list, screen)
 cppt2 = time.time()
 print(f"cpp time to render: {(cppt2-cppt1) * 1000:0.4f} ms")
-render(img_draw, cam)
+render_PIL(img_draw, cam)
 t2 = time.time()
 print(f"time to render: {(t2-t1) * 1000:0.4f} ms")
 frames.append(img.copy())

@@ -345,3 +345,4 @@ cdef class Window:
     cdef window* c_class
 
     cpdef void update(self)
+

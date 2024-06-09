@@ -393,3 +393,4 @@ cdef class Window:
 
     cpdef void update(self):
         self.c_class.update()
+        
