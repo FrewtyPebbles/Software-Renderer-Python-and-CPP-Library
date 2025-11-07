@@ -1,6 +1,6 @@
 # 3D Projections in Python
 
-> This project has been discontinued in favor of a new version of the engine using opengl. It was an experimental learning project where I tried some things like Barycentric coordinates. Not meant to be compiled or actually used by anyone but me at the time.  Check out my 3D game engine [Loxoc](https://github.com/FrewtyPebbles/Loxoc-Python3D-Game-Engine) for a project meant to be compiled and used by others.
+> This project has been discontinued in favor of a new version of the engine using opengl. It was an experimental learning project where I tried some things like Barycentric coordinates. Not meant to be compiled or actually used by anyone but me at the time. The gifs below show some successful applications of the renderer and what it was capable of.  Check out my 3D game engine [Loxoc](https://github.com/FrewtyPebbles/Loxoc-Python3D-Game-Engine) for a project meant to be compiled and used by others.
 
 This is a 3d rendering library for python written in c++.  Right now it only has a software renderer, but I am working on an opengl renderer.
 
